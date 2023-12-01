@@ -10,3 +10,5 @@ sail php artisan make:migration create_xxxx_table
 touch database/database.sqlite
 
 sail php artisan tink
+
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
