@@ -17,3 +17,5 @@ docker run --rm \
  -v $(pwd):/opt \
  -w /opt laravelsail/php80-composer:latest \
  bash -c "composer require --dev laravel/sail && composer install && php artisan sail:install --with=mariadb,mailhog,redis"
+
+docker exec -it gm-empresa-laravel.test-1 /bin/bash
