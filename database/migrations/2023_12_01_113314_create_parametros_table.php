@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('parametros', function (Blueprint $table) {
             $table->id();
-            $table->decimal('custo_direto', 8, 2)->default('1');
+            $table->decimal('custo_direto', 8, 2)->nullable();
+            $table->decimal('despesa_fixa', 8, 2)->nullable();
+            $table->integer('juros')->nullable();
+            $table->decimal('fator_folha', 8, 2)->nullable();
+            $table->decimal('fator_propaganda', 8, 2)->nullable();
+            $table->decimal('valor_maximo_produto', 8, 2)->nullable();
+            $table->decimal('valor_investimento', 8, 2)->nullable();
+            $table->decimal('novo_custo_direto', 8, 2)->nullable();
+            $table->integer('ganho_mercado')->nullable();
+            $table->integer('grafico')->nullable();
+            $table->integer('offline')->nullable();
         });
     }
 
