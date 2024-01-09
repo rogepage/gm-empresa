@@ -7,7 +7,7 @@ use App\Services\SimuladorService;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
-
+use stdClass;
 
 class HomeController extends Controller
 {
@@ -20,13 +20,13 @@ class HomeController extends Controller
 
     public function simulador()
     {
-        return view('simulador');
+        return view('simulador')->with('form', [])->with('simulador', false);
     }
 
     public function simular(Request $request)
     {
         $data = $request->all();
-        $this->simuladorService->simulaJogada($data);
-        return view('simulador')->with('previewData', $data);
+        $simulador = $this->simuladorService->simulaJogada($data);
+        return view('simulador')->with('form', $data)->with('simulador', $simulador);
     }
 }
