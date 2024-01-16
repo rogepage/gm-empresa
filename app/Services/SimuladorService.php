@@ -18,8 +18,10 @@ class SimuladorService
         $obj = Parametro::find(1);
 
 
-        $dell_valor = $this->converteMoedaFloat($data['dell_valor']);
-        $hp_valor = $this->converteMoedaFloat($data['hp_valor']);
+        $dell_valor = $this->converteMoedaFloat(isset($data['dell_valor']) ? $data['dell_valor'] : $this->valorProdRand());
+        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRand());
+
+        // dd($dell_valor, $hp_valor);
 
         $dell_folha = $this->converteMoedaFloat($data['dell_folha'] ?: 0);
         $hp_folha = $this->converteMoedaFloat($data['hp_folha'] ?: 0);
@@ -132,12 +134,19 @@ class SimuladorService
 
 
 
-        $similador = new stdClass();
-        $similador->lucro_dell =  $lucroDellSemForm;
-        $similador->mercado_dell = $mercadoDell;
-        $similador->mercado_hp = $mercadoHP;
-        $similador->lucro_hp =  $lucroHPSemForm;
-        return $similador;
+        $simulador = new stdClass();
+        $simulador->lucro_dell =  $lucroDellSemForm;
+        $simulador->mercado_dell = $mercadoDell;
+        $simulador->mercado_hp = $mercadoHP;
+        $simulador->lucro_hp =  $lucroHPSemForm;
+        $simulador->mercado = $mercadoTotal;
+        $simulador->dell_valor = $dell_valor;
+        $simulador->hp_valor = $hp_valor;
+
+
+
+
+        return $simulador;
     }
 
 
@@ -193,5 +202,10 @@ class SimuladorService
         $aDados[3] = $investimento;
 
         return $aDados;
+    }
+
+    private function valorProdRand()
+    {
+        return mt_rand(1800, 5500);
     }
 }
