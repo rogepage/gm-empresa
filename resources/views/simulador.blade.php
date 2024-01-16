@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
-  <title>Spartansite</title>
+  <title>Spartansite :: Jogos de Empresas</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
   <div class="container">
@@ -32,7 +33,7 @@
                   <input type="text" class="form-control" value="{{ old('dell_publicidade',isset($form['dell_publicidade']) ? $form['dell_publicidade'] :  '') }}"  id="dell_publicidade" name="dell_publicidade" placeholder="ex: 2,4" onkeyup="formatarMoeda(this)">
                 </div>
               
-                @if($simulador && isset($form['dell_valor']) )
+                @if($simulador)
                 <div class="col-md-4">
                   <div class="p-3 mb-3 {{$simulador->lucro_dell >0 ? 'bg-success' : 'bg-warning' }}  text-white">Lucro: {{money($simulador->lucro_dell, 'BRL')}}</div>
                 </div>
@@ -40,8 +41,16 @@
                 <div class="col-md-4">
                   <div class="p-3 mb-3 bg-light text-dark">Mercado: {{$simulador->mercado_dell}}</div>
                 </div>
+
+                <div class="col-md-4">
+                  <div id="chart_lucro_dell"></div>
+                </div>
+
+                <div class="col-md-4">
+                  <div id="chart_mercado_dell"></div>
+                </div>
                 @endif
-               
+                
               {{-- </form> --}}
             </div>
           </div>
@@ -63,13 +72,21 @@
                   <label for="campo6" class="form-label">Publicidade (%)</label>
                   <input type="text" class="form-control" id="hp_publicidade" value="{{ old('hp_publicidade',isset($form['hp_publicidade']) ? $form['hp_publicidade'] : '') }}"  name="hp_publicidade" placeholder="ex: 3" onkeyup="formatarMoeda(this)">
                 </div>
-                @if($simulador && isset($form['hp_valor']))
+                @if($simulador)
                 <div class="col-md-4">
                   <div class="p-3 mb-3 {{$simulador->lucro_hp >0 ? 'bg-success' : 'bg-warning' }}  text-white">Lucro: {{money($simulador->lucro_hp, 'BRL') }}</div>
                 </div>
 
                 <div class="col-md-4">
                   <div class="p-3 mb-3 bg-light text-dark">Mercado: {{$simulador->mercado_hp}}</div>
+                </div>
+
+                <div class="col-md-4">
+                  <div id="chart_lucro_hp"></div>
+                </div>
+
+                <div class="col-md-4">
+                  <div id="chart_mercado_hp"></div>
                 </div>
                 @endif
 
@@ -83,28 +100,13 @@
       
       
 
-      {{-- <div class="row">
-        <div class="col-md-4">
-          <canvas id="grafico1"></canvas>
-        </div>
-        <div class="col-md-4">
-          <canvas id="grafico2"></canvas>
-        </div>
-        <div class="col-md-4">
-          <canvas id="grafico3"></canvas>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <canvas id="grafico4"></canvas>
-        </div>
-      </div> --}}
       
-    </div>
     <div class="row">
          <button type="submit" class="btn btn-primary mt-3">Simular</button>
     <div>
     <form>
+
+     
       
   </div>
 
@@ -127,5 +129,118 @@
         if(valor == 'NaN') elemento.value = '';
     }
 </script>
+@if(isset($simulador->lucro_dell))
+<script type="text/javascript">
+
+  // Load the Visualization API and the corechart package.
+  google.charts.load('current', {'packages':['bar']});
+
+  // Set a callback to run when the Google Visualization API is loaded.
+  google.charts.setOnLoadCallback(drawChartDell);
+  google.charts.setOnLoadCallback(drawChartHP);
+
+  // Callback that creates and populates a data table,
+  // instantiates the pie chart, passes in the data and
+  // draws it.
+  function drawChartDell() {
+        var data = google.visualization.arrayToDataTable([
+          ['', ''],
+          ['DELL', {{isset($simulador->lucro_dell)? $simulador->lucro_dell:0}}]
+        ]);
+        var cordeg = '{{$simulador->lucro_dell>0 ? '#0000FF': '#004411' }}';
+        var cor = '{{$simulador->lucro_dell>0 ? 'blue': 'red'}}';
+        
+        var options = {
+          colors: [cor, cordeg],
+          chart: {
+            title: 'Lucro',
+          },
+          bars: 'vertical' // Required for Material Bar Charts.
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('chart_lucro_dell'));
+
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+
+      function drawChartHP() {
+        var data = google.visualization.arrayToDataTable([
+          ['', ''],
+          ['HP', {{isset($simulador->lucro_hp)? $simulador->lucro_hp:0}}]
+        ]);
+        var cordeg = '{{$simulador->lucro_hp>0 ? '#0000FF': '#004411' }}';
+        var cor = '{{$simulador->lucro_hp>0 ? 'blue': 'red'}}';
+        
+        var options = {
+          colors: [cor, cordeg],
+          chart: {
+            title: 'Lucro',
+          },
+          bars: 'vertical' // Required for Material Bar Charts.
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('chart_lucro_hp'));
+
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+
+
+      google.charts.load('current', {packages: ['corechart', 'line']});
+      google.charts.setOnLoadCallback(drawBasicDell);
+      google.charts.setOnLoadCallback(drawBasicHP);
+
+      function drawBasicDell() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 'X');
+            data.addColumn('number', 'Valor');
+
+            data.addRows([
+              [{{$simulador->mercado_dell}}, {{$simulador->dell_valor}}],[{{$simulador->mercado}},0]
+            ]);
+
+            var options = {
+              hAxis: {
+                title: 'Unidades'
+              },
+              vAxis: {
+                title: 'Valor'
+              }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_mercado_dell'));
+
+            chart.draw(data, options);
+          }
+
+
+          function drawBasicHP() {
+
+              var data = new google.visualization.DataTable();
+              data.addColumn('number', 'X');
+              data.addColumn('number', 'Valor');
+
+              data.addRows([
+                [{{$simulador->mercado_hp}}, {{$simulador->hp_valor}}],[{{$simulador->mercado}},0]
+              ]);
+
+              var options = {
+                hAxis: {
+                  title: 'Unidades'
+                },
+                vAxis: {
+                  title: 'Valor'
+                }
+              };
+
+              var chart = new google.visualization.LineChart(document.getElementById('chart_mercado_hp'));
+
+              chart.draw(data, options);
+            }
+
+
+
+</script>
+@endif
 </body>
 </html>
