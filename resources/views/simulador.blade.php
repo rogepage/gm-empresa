@@ -22,7 +22,7 @@
               {{-- <form> --}}
                 <div class="mb-3">
                   <label for="campo1" class="form-label">Preço (R$)</label>
-                  <input type="text" class="form-control" value="{{ old('dell_valor',isset($form['dell_valor']) ? $form['dell_valor'] :  '') }}"  id="dell_valor" name="dell_valor" placeholder="ex: 1.500,00" onkeyup="formatarMoeda(this)">
+                  <input type="text" class="form-control" value="{{ old('dell_valor',isset($form['dell_valor']) ? $form['dell_valor'] :  '')}}"  id="dell_valor" name="dell_valor" placeholder="ex: 1.500,00" onkeyup="formatarMoeda(this)">
                 </div>
                 <div class="mb-3">
                   <label for="campo2" class="form-label">Folha de pagamento (R$)</label>
@@ -32,6 +32,21 @@
                   <label for="campo3" class="form-label">Publicidade (%)</label>
                   <input type="text" class="form-control" value="{{ old('dell_publicidade',isset($form['dell_publicidade']) ? $form['dell_publicidade'] :  '') }}"  id="dell_publicidade" name="dell_publicidade" placeholder="ex: 2,4" onkeyup="formatarMoeda(this)">
                 </div>
+                @if($parametro->investimento==1)
+                <div class="mb-3">
+                  <label for="campo3" class="form-label">Investir em linha de produção?</label>
+                  <select class="form-control" name="dell_investimento" id="combo_dell_investe">
+                    <option value="0" {{ old('dell_investimento',isset($form['dell_investimento'])? $form['dell_investimento'] : 0) == '0' ? 'selected' : '' }}> Não
+                    </option>
+                    <option value="1" {{ old('dell_investimento',isset($form['dell_investimento'])? $form['dell_investimento'] : 0) == '1' ? 'selected' : '' }}> Sim
+                    </option>
+                  </select> 
+                </div>
+
+                <div class="mb-3" id="dell_investe" style="display: none">
+                  <label for="campo3" class="form-label">Valor a ser investido:  R$ {{$parametro->valor_investimento}}</label>
+                </div>
+                @endif
               
                 @if($simulador)
                 <div class="col-md-4">
@@ -72,6 +87,21 @@
                   <label for="campo6" class="form-label">Publicidade (%)</label>
                   <input type="text" class="form-control" id="hp_publicidade" value="{{ old('hp_publicidade',isset($form['hp_publicidade']) ? $form['hp_publicidade'] : '') }}"  name="hp_publicidade" placeholder="ex: 3" onkeyup="formatarMoeda(this)">
                 </div>
+                @if($parametro->investimento==1)
+                <div class="mb-3">
+                  <label for="campo3" class="form-label">Investir em linha de produção?</label>
+                  <select class="form-control" name="hp_investimento" id="combo_hp_investe">
+                    <option value="0" {{ old('hp_investimento',isset($form['hp_investimento'])? $form['hp_investimento'] : 0) == '0' ? 'selected' : '' }}> Não
+                    </option>
+                    <option value="1" {{ old('hp_investimento',isset($form['hp_investimento'])? $form['hp_investimento'] : 0) == '1' ? 'selected' : '' }}> Sim
+                    </option>
+                  </select> 
+                </div>
+
+                <div class="mb-3" id="hp_investe" style="display: none">
+                  <label for="campo3" class="form-label">Valor a ser investido:  R$ {{$parametro->valor_investimento}}</label>
+                </div>
+                @endif
                 @if($simulador)
                 <div class="col-md-4">
                   <div class="p-3 mb-3 {{$simulador->lucro_hp >0 ? 'bg-success' : 'bg-warning' }}  text-white">Lucro: {{money($simulador->lucro_hp, 'BRL') }}</div>
@@ -106,11 +136,43 @@
     <div>
     <form>
 
+      <div class="row">
+        <button type="button" class="btn btn-warning mt-3" onclick="self.location='{{url('/parametros')}}'">Parâmetros do jogo</button>
+      <div>
+
      
       
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+ 
+
+<script>
+  $( "#combo_dell_investe" )
+    .on( "change", function() { 
+      
+      if(this.value == 1){
+        $('#dell_investe').show()
+
+      }else{
+        $('#dell_investe').hide()
+      }
+    
+    } );
+
+    $( "#combo_hp_investe" )
+    .on( "change", function() { 
+      if(this.value == 1){
+        $('#hp_investe').show()
+      }else{
+        $('#hp_investe').hide()
+      }
+    } );
+  </script>
+  
+
+
   <script>
     function formatarMoeda(input) {
         var elemento = input;

@@ -15,14 +15,13 @@ class SimuladorService
     public function simulaJogada(array $data): stdClass
     {
 
+        // retorna do banco os parametros
         $obj = Parametro::find(1);
 
 
-        $dell_valor = $this->converteMoedaFloat(isset($data['dell_valor']) ? $data['dell_valor'] : $this->valorProdRand());
-        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRand());
-
-        // dd($dell_valor, $hp_valor);
-
+        // padroniza os valores em moedas
+        $dell_valor = $this->converteMoedaFloat(isset($data['dell_valor']) ? $data['dell_valor'] : $this->valorProdRandomico());
+        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRandomico());
         $dell_folha = $this->converteMoedaFloat($data['dell_folha'] ?: 0);
         $hp_folha = $this->converteMoedaFloat($data['hp_folha'] ?: 0);
         $dell_publicidade = $this->converteMoedaFloat($data['dell_publicidade'] ?: 0);
@@ -30,21 +29,28 @@ class SimuladorService
         $dell_investimento =  isset($data['dell_investimento']) ? true : false;
         $hp_investimento =  isset($data['hp_investimento']) ? true : false;
 
+        $custo_direto = $this->converteMoedaFloat($obj->custo_direto);
+        $valor_maximo_produto = $this->converteMoedaFloat($obj->valor_maximo_produto);
+        $valor_investimento =  $this->converteMoedaFloat($obj->valor_investimento);
+        $despesa_fixa  = $this->converteMoedaFloat($obj->despesa_fixa);
+
+
+
 
 
         $mercadoTotal = $this->calculaMercadoPrecoMenor(
             $dell_valor,
             $hp_valor,
             $obj->ganho_mercado,
-            $obj->elasticiade_produto,
-            $obj->valor_maximo_produto
+            $obj->elasticidade_produto,
+            $valor_maximo_produto
         );
         $mercadoMaiorValor = $this->calculaMercadoValorMaior(
             $dell_valor,
             $hp_valor,
             $obj->ganho_mercado,
-            $obj->elasticiade_produto,
-            $obj->valor_maximo_produto
+            $obj->elasticidade_produto,
+            $valor_maximo_produto
         );
         $mercadoMenorValor = $mercadoTotal - $mercadoMaiorValor;
 
@@ -57,6 +63,7 @@ class SimuladorService
             $mercadoHP = $mercadoMenorValor;
         }
 
+        /********************** Dell ****************************/
 
         // folha Dell
         if ($dell_folha > 0) {
@@ -76,12 +83,14 @@ class SimuladorService
         $receitaDell = ceil($mercadoDell * $dell_valor);
 
 
-        $custoTotalDell = ($mercadoDell * $obj->custo_direto);
+        $custoTotalDell = ($mercadoDell * $custo_direto);
         $aInvestDell = 0;
         if ($dell_investimento) {
-            $custoTotalDell = ($mercadoDell * $obj->novo_custo_direto);
-            $aInvestDell = $this->calculaDadosInvenstimento($obj->valor_investimento, $obj->juros);
+            $custoTotalDell = ($mercadoDell * $custo_direto);
+            $aInvestDell = $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
         }
+
+
 
         // deduzindo o valor de propagando da receita DELL
 
@@ -89,7 +98,7 @@ class SimuladorService
         $margemDell = $receitaDell - $custoTotalDell;
 
 
-        $lucroDellSemForm = $margemDell - $obj->despesa_fixa - $aInvestDell;
+        $lucroDellSemForm = $margemDell - $despesa_fixa - $aInvestDell;
 
         // deduzindo o valor da folha do lucro DELL
         $lucroDellSemForm = $lucroDellSemForm - ($dell_folha * $mercadoDell);
@@ -98,13 +107,11 @@ class SimuladorService
         /********************** HP ****************************/
 
 
-
         // folha hp
         if ($hp_folha > 0) {
             $unitFolha = ($hp_folha * $obj->fator_folha);
             $mercadoHP = $mercadoHP + $unitFolha;
         }
-
 
         // propaganda HP
         if ($hp_publicidade > 0) {
@@ -112,39 +119,38 @@ class SimuladorService
             $mercadoHP = $mercadoHP + $unitPropag;
         }
 
-
         $receitaHP = $mercadoHP * $hp_valor;
 
         // deduzindo o valor de propagando do lucro DELL
         $receitaHP = $receitaHP - ($receitaHP * ($hp_publicidade / 100));
 
-        $custoTotalHP = ($mercadoHP * $obj->custo_direto);
+        $custoTotalHP = ($mercadoHP * $custo_direto);
         $aInvestHP = 0;
 
         if ($hp_investimento) {
-            $custoTotalHP = ($mercadoHP * $obj->novo_custo_direto);
-            $aInvestHP =  $this->calculaDadosInvenstimento($obj->valor_investimento, $obj->juros);
+            $custoTotalHP = ($mercadoHP * $custo_direto);
+            $aInvestHP =  $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
         }
 
         $margemHP = $receitaHP - $custoTotalHP;
-        $lucroHPSemForm = $margemHP - $obj->despesa_fixa -  $aInvestHP;
+        $lucroHPSemForm = $margemHP - $despesa_fixa -  $aInvestHP;
 
         // deduzindo o valor da folha do lucro DELL
         $lucroHPSemForm = $lucroHPSemForm - ($hp_folha * $mercadoHP);
 
 
-
+        // retornando os valores calculados para o simulador
         $simulador = new stdClass();
         $simulador->lucro_dell =  $lucroDellSemForm;
-        $simulador->mercado_dell = $mercadoDell;
-        $simulador->mercado_hp = $mercadoHP;
+        $simulador->mercado_dell = round($mercadoDell);
+        $simulador->mercado_hp = round($mercadoHP);
         $simulador->lucro_hp =  $lucroHPSemForm;
-        $simulador->mercado = $mercadoTotal;
+        $simulador->mercado = round($mercadoTotal);
         $simulador->dell_valor = $dell_valor;
         $simulador->hp_valor = $hp_valor;
-
-
-
+        $simulador->valor_investimento = $valor_investimento;
+        $simulador->hp_investe = $hp_investimento;
+        $simulador->dell_investe = $dell_investimento;
 
         return $simulador;
     }
@@ -186,9 +192,9 @@ class SimuladorService
     {
 
 
-        if (strpos($investimento, ",") != false) {
-            $investimento = $this->converteMoedaFloat($investimento);
-        }
+        // if (strpos($investimento, ",") != false) {
+        //     $investimento = $this->converteMoedaFloat($investimento);
+        // }
 
 
         $depreciacao = ceil($investimento / 60) * 3;
@@ -196,16 +202,16 @@ class SimuladorService
 
 
         $total = $depreciacao + $jurosmensal;
-        $aDados[0] = $depreciacao;
-        $aDados[1] = $jurosmensal;
-        $aDados[2] = $total;
-        $aDados[3] = $investimento;
+        // $aDados[0] = $depreciacao;
+        // $aDados[1] = $jurosmensal;
+        // $aDados[2] = $total;
+        // $aDados[3] = $investimento;
 
-        return $aDados;
+        return $total;
     }
 
-    private function valorProdRand()
+    private function valorProdRandomico()
     {
-        return mt_rand(1800, 5500);
+        return round(mt_rand(1800, 5500));
     }
 }

@@ -8,9 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Parametro extends Model
 {
     use HasFactory;
-    // protected $fillable = [
-    //     'titulo', 'ordem', 'arquivo', 'url'
-    // ];
+    protected $fillable = [
+
+        "custo_direto",
+        "despesa_fixa",
+        "juros",
+        "fator_folha",
+        "fator_propaganda",
+        "valor_maximo_produto",
+        "valor_investimento",
+        "novo_custo_direto",
+        "ganho_mercado",
+        "elasticidade_produto",
+        "investimento"
+    ];
+
 
     // public function bannerByOrder()
     // {
