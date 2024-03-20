@@ -70,4 +70,15 @@ class HomeController extends Controller
         return back()
             ->with('sucesso', 'Reset de parametros realizado com sucesso');
     }
+
+    public function inicio()
+    {
+        return view('inicio');
+    }
+
+    public function selecao_empresa(Request $request)
+    {
+
+        return view('jogada');
+    }
 }

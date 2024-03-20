@@ -11,7 +11,7 @@
 
 <body>
 				<div class="container">
-								<h1 class="text-center">Simulador</h1>
+								<h1 class="text-center">Joga</h1>
 								<form action="{{ route('simulador.simular') }}" method="POST" id="quickForm">
 												@csrf
 

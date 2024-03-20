@@ -20,3 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\HomeController::class, 'simulador']);
 
 Route::post('/simulador/simular', [App\Http\Controllers\HomeController::class, 'simular'])->name('simulador.simular');
+
+Route::get('/inicio', [App\Http\Controllers\HomeController::class, 'inicio'])->name('jogadas.inicio');
+
+Route::post('/selecao/empresa', [App\Http\Controllers\HomeController::class, 'selecao_empresa'])->name('selecao.empresa');
