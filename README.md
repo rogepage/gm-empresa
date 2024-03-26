@@ -19,3 +19,6 @@ docker run --rm \
  bash -c "composer require --dev laravel/sail && composer install && php artisan sail:install --with=mariadb,mailhog,redis"
 
 docker exec -it gm-empresa-laravel.test-1 /bin/bash
+
+
+php artisan make:session-table

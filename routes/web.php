@@ -24,3 +24,7 @@ Route::post('/simulador/simular', [App\Http\Controllers\HomeController::class, '
 Route::get('/inicio', [App\Http\Controllers\HomeController::class, 'inicio'])->name('jogadas.inicio');
 
 Route::post('/selecao/empresa', [App\Http\Controllers\HomeController::class, 'selecao_empresa'])->name('selecao.empresa');
+
+
+Route::post('/jogada/gravar', [App\Http\Controllers\HomeController::class, 'jogada_gravar'])->name('jogada.gravar');
+Route::get('/resultado', [App\Http\Controllers\HomeController::class, 'resultado'])->name('resultado');

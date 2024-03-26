@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Services\SimuladorService;
 use App\Services\ParametrosService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 use Illuminate\Support\Str;
 use stdClass;
@@ -78,7 +79,34 @@ class HomeController extends Controller
 
     public function selecao_empresa(Request $request)
     {
+        $request->session()->forget('jogadas');
+        return view('jogada')->with('jogadas', []);
+    }
 
-        return view('jogada');
+    public function jogada_gravar(Request $request)
+    {
+        $data = $request->all();
+        $simulador = $this->simuladorService->simulaJogada($data);
+        $jogadas =  $request->session()->get('jogadas');
+
+        if ($jogadas) {
+            $jogadas = Arr::prepend($jogadas,  $simulador);
+        } else {
+            $jogadas = Arr::prepend([],  $simulador);
+        }
+        $request->session()->put('jogadas', $jogadas);
+
+        if (count($jogadas) < 3) {
+            return view('jogada')
+                ->with('sucesso', 'Parabéns sua jogado foi realizado com sucesso')
+                ->with('jogadas', $jogadas);
+        }
+        return redirect()->route('resultado');
+    }
+
+    public function resultado(Request $request)
+    {
+        $jogadas =  $request->session()->get('jogadas');
+        return view('resultado', compact('jogadas'));
     }
 }

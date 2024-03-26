@@ -12,8 +12,15 @@
 <body>
 				<div class="container">
 								<h1 class="text-center">Joga</h1>
-								<form action="{{ route('simulador.simular') }}" method="POST" id="quickForm">
+								<form action="{{ route('jogada.gravar') }}" method="POST" id="quickForm">
 												@csrf
+												@if (isset($sucesso))
+																<div class="alert alert-success">
+																				<p>{{ $sucesso }}</p>
+
+																				<p>Agora realize a {{ count($jogadas) + 1 }} &#170; rodada</p>
+																</div>
+												@endif
 
 												<div class="row">
 
@@ -44,6 +51,25 @@
 																																				onkeyup="formatarMoeda(this)">
 																												</div>
 
+																												@if (count(isset($jogadas) ? $jogadas : []) + 1 >= 3)
+																																<div class="mb-3">
+																																				<label for="campo3" class="form-label">Investir
+																																								<strong> {{ money($jogadas[0]->valor_investimento, 'BRL') }} </strong> em
+																																								linha de
+																																								produção?</label>
+																																				<select class="form-control" name="hp_investimento" id="combo_hp_investe">
+																																								<option value="0"
+																																												{{ old('hp_investimento', isset($form['hp_investimento']) ? $form['hp_investimento'] : 0) == '0' ? 'selected' : '' }}>
+																																												Não
+																																								</option>
+																																								<option value="1"
+																																												{{ old('hp_investimento', isset($form['hp_investimento']) ? $form['hp_investimento'] : 0) == '1' ? 'selected' : '' }}>
+																																												Sim
+																																								</option>
+																																				</select>
+																																</div>
+																												@endif
+
 
 
 
@@ -60,13 +86,15 @@
 																<div>
 																				<br><br>
 																				<div class="row">
-																								<button type="submit" class="btn btn-primary mt-3">Gravar jogada</button>
+																								<button type="submit" class="btn btn-primary mt-3">Gravar
+																												{{ count($jogadas ? $jogadas : []) + 1 }}
+																												&#170; jogada</button>
 
 																				</div>
 
 																				<div class="row">
 																								<button type="button" class="btn btn-warning mt-3"
-																												onclick="self.location='{{ url('/simulador') }}'">Voltar
+																												onclick="self.location='{{ url('/inicio') }}'">Voltar
 																								</button>
 
 																				</div>
