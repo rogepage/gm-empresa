@@ -15,8 +15,16 @@
 
 
 
-								<div class="col-md-8">
-												<div id="chart_lucro_dell"></div>
+								<div class="col-md-12">
+												<div id="chart_lucro_trimestral" style="width: 900px; height: 500px;"></div>
+								</div>
+
+								<div class="col-md-12">
+												<div id="chart_mercado" style="width: 900px; height: 500px;"></div>
+								</div>
+
+								<div class="col-md-12">
+												<div id="chart_lucro" style="width: 900px; height: 500px;"></div>
 								</div>
 
 				</div>
@@ -51,27 +59,75 @@
 				google.charts.load("current", {
 								packages: ['corechart', 'bar']
 				});
-				google.charts.setOnLoadCallback(drawChart);
 
-				function drawChart() {
+				google.charts.setOnLoadCallback(drawChartLucro);
+				google.charts.setOnLoadCallback(drawCharLucroTotal);
+				google.charts.setOnLoadCallback(drawChartMercado);
+
+
+				function drawChartLucro() {
 								var data = google.visualization.arrayToDataTable([
-												['', 'DELL', 'HP'],
-												['1 tri', 1000, 400],
-												['2 tri', 1170, 460],
-												['3 tri', 660, 1120],
-												['4 tri', 1030, 540]
+												['12 meses', 'DELL', 'HP'],
+												['1 trimestre', {{ $jogadas[0]->lucro_dell }}, {{ $jogadas[0]->lucro_hp }}],
+												['2 trimestre', {{ $jogadas[1]->lucro_dell }}, {{ $jogadas[1]->lucro_hp }}],
+												['3 trimestre', {{ $jogadas[2]->lucro_dell }}, {{ $jogadas[2]->lucro_hp }}],
+												['4 trimestre', {{ $jogadas[3]->lucro_dell }}, {{ $jogadas[3]->lucro_hp }}]
 								]);
 
 								var options = {
 												chart: {
-																title: 'Lucro no ano',
+																title: 'Lucro por trimestre',
 																subtitle: 'Lucro obitido por cada empresa por trimestre',
 												}
+
 								};
 
-								var chart = new google.charts.Bar(document.getElementById('chart_lucro_dell'));
+								var chart = new google.charts.Bar(document.getElementById('chart_lucro_trimestral'));
 
 								chart.draw(data, google.charts.Bar.convertOptions(options));
+				}
+
+
+				function drawCharLucroTotal() {
+								var data = google.visualization.arrayToDataTable([
+												['12 meses', 'DELL', 'HP'],
+												['ano',
+																{{ $jogadas[0]->lucro_dell + $jogadas[1]->lucro_dell + $jogadas[2]->lucro_dell + $jogadas[3]->lucro_dell }},
+																{{ $jogadas[0]->lucro_hp + $jogadas[1]->lucro_hp + $jogadas[2]->lucro_hp + $jogadas[3]->lucro_hp }}
+												]
+								]);
+
+								var options = {
+												chart: {
+																title: 'Lucro total',
+																subtitle: 'Somatória do lucro de todos os trimestres',
+												},
+												bars: 'horizontal' // Required for Material Bar Charts.
+								};
+
+								var chart = new google.charts.Bar(document.getElementById('chart_lucro'));
+
+								chart.draw(data, google.charts.Bar.convertOptions(options));
+				}
+
+				function drawChartMercado() {
+								var data = google.visualization.arrayToDataTable([
+												['Task', 'Hours per Day'],
+												['DELL',
+																{{ $jogadas[0]->mercado_dell + $jogadas[1]->mercado_dell + $jogadas[2]->mercado_dell + $jogadas[3]->mercado_dell }}
+												],
+												['HP',
+																{{ $jogadas[0]->mercado_hp + $jogadas[1]->mercado_hp + $jogadas[2]->mercado_hp + $jogadas[3]->mercado_hp }}
+												]
+								]);
+
+								var options = {
+												title: 'Ganho de mercado',
+												is3D: true,
+								};
+
+								var chart = new google.visualization.PieChart(document.getElementById('chart_mercado'));
+								chart.draw(data, options);
 				}
 </script>
 

@@ -96,7 +96,8 @@ class HomeController extends Controller
         }
         $request->session()->put('jogadas', $jogadas);
 
-        if (count($jogadas) < 3) {
+
+        if (count($jogadas) <= 3) {
             return view('jogada')
                 ->with('sucesso', 'Parabéns sua jogado foi realizado com sucesso')
                 ->with('jogadas', $jogadas);
@@ -107,6 +108,7 @@ class HomeController extends Controller
     public function resultado(Request $request)
     {
         $jogadas =  $request->session()->get('jogadas');
+        // dd($jogadas);
         return view('resultado', compact('jogadas'));
     }
 }
