@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 //     return view('simula');
 // });
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'simulador']);
+Route::get('/', [App\Http\Controllers\HomeController::class, 'home']);
+
+Route::get('/simulador', [App\Http\Controllers\HomeController::class, 'simulador']);
 
 Route::post('/simulador/simular', [App\Http\Controllers\HomeController::class, 'simular'])->name('simulador.simular');
 
