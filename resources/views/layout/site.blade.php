@@ -16,7 +16,7 @@
 
 								/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 								.row.content {
-												height: 950px
+												height: 1150px
 								}
 
 								/* Set gray background color and 100% height */
@@ -57,7 +57,8 @@
 																				<span class="icon-bar"></span>
 																				<span class="icon-bar"></span>
 																</button>
-																<a class="navbar-brand" href="#"><img src="{{ asset('img/logo.gif') }}" alt="Spartansite"></a>
+																<a class="navbar-brand" href="{{ url('/') }}"><img src="{{ asset('img/logo.gif') }}"
+																								alt="Spartansite"></a>
 												</div>
 												<div class="navbar-collapse collapse" id="myNavbar">
 																<ul class="nav navbar-nav">

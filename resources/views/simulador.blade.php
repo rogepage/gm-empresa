@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
-				<title>Spartansite :: Jogos de Empresas</title>
-				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-</head>
-
-<body>
+@extends('layout.site')
+@section('content')
 				<div class="container">
+
 								<h1 class="text-center">Simulador</h1>
 								<form action="{{ route('simulador.simular') }}" method="POST" id="quickForm">
 												@csrf
@@ -21,7 +12,6 @@
 																				<div class="card">
 																								<div class="card-body">
 																												<h5 class="card-title">Dell</h5>
-																												{{-- <form> --}}
 																												<div class="mb-3">
 																																<label for="campo1" class="form-label">Preço (R$)</label>
 																																<input type="text" class="form-control"
@@ -76,12 +66,16 @@
 																																				</div>
 																																</div>
 
-																																<div class="col-md-4">
-																																				<div id="chart_lucro_dell"></div>
-																																</div>
 
-																																<div class="col-md-4">
-																																				<div id="chart_mercado_dell"></div>
+
+																																<div class="row">
+																																				<div class="col-sm">
+																																								<div id="chart_lucro_dell"></div>
+																																				</div>
+																																				<div class="col-sm">
+																																								<div id="chart_mercado_dell"></div>
+																																				</div>
+
 																																</div>
 																												@endif
 
@@ -89,6 +83,7 @@
 																								</div>
 																				</div>
 																</div>
+
 																<div class="col">
 																				<div class="card">
 																								<div class="card-body">
@@ -144,12 +139,16 @@
 																																				</div>
 																																</div>
 
-																																<div class="col-md-4">
-																																				<div id="chart_lucro_hp"></div>
-																																</div>
 
-																																<div class="col-md-4">
-																																				<div id="chart_mercado_hp"></div>
+
+																																<div class="row">
+																																				<div class="col-sm">
+																																								<div id="chart_lucro_hp"></div>
+																																				</div>
+																																				<div class="col-sm">
+																																								<div id="chart_mercado_hp"></div>
+																																				</div>
+
 																																</div>
 																												@endif
 
@@ -158,194 +157,182 @@
 																								</div>
 																				</div>
 																</div>
+												</div>
+												<div class="row">
+																<div class="col-md-6">
+																				<button type="submit" class="btn btn-primary mt-3">Simular jogada</button>
+																</div>
+																<div class="col-md-6">
+																				<button type="button" class="btn btn-warning mt-3"
+																								onclick="self.location='{{ url('/inicio') }}'">Iniciar o
+																								jogo</button>
+																</div>
+												</div>
+
+
+								</form>
+				</div>
+@endsection
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+<script>
+				$("#combo_dell_investe")
+								.on("change", function() {
+
+												if (this.value == 1) {
+																$('#dell_investe').show()
+
+												} else {
+																$('#dell_investe').hide()
+												}
+
+								});
+
+				$("#combo_hp_investe")
+								.on("change", function() {
+												if (this.value == 1) {
+																$('#hp_investe').show()
+												} else {
+																$('#hp_investe').hide()
+												}
+								});
+</script>
 
 
 
+<script>
+				function formatarMoeda(input) {
+								var elemento = input;
+								var valor = elemento.value;
+
+								valor = valor + '';
+								valor = parseInt(valor.replace(/[\D]+/g, ''));
+								valor = valor + '';
+								valor = valor.replace(/([0-9]{2})$/g, ",$1");
+
+								if (valor.length > 6) {
+												valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+								}
+
+								elemento.value = valor;
+								if (valor == 'NaN') elemento.value = '';
+				}
+</script>
+@if (isset($simulador->lucro_dell))
+				<script type="text/javascript">
+								// Load the Visualization API and the corechart package.
+								google.charts.load('current', {
+												'packages': ['bar']
+								});
+
+								// Set a callback to run when the Google Visualization API is loaded.
+								google.charts.setOnLoadCallback(drawChartDell);
+								google.charts.setOnLoadCallback(drawChartHP);
+
+								// Callback that creates and populates a data table,
+								// instantiates the pie chart, passes in the data and
+								// draws it.
+								function drawChartDell() {
+												var data = google.visualization.arrayToDataTable([
+																['', ''],
+																['DELL', {{ isset($simulador->lucro_dell) ? $simulador->lucro_dell : 0 }}]
+												]);
+												var cordeg = '{{ $simulador->lucro_dell > 0 ? '#0000FF' : '#004411' }}';
+												var cor = '{{ $simulador->lucro_dell > 0 ? 'blue' : 'red' }}';
+
+												var options = {
+																colors: [cor, cordeg],
+																chart: {
+																				title: 'Lucro',
+																},
+																bars: 'vertical' // Required for Material Bar Charts.
+												};
+
+												var chart = new google.charts.Bar(document.getElementById('chart_lucro_dell'));
+
+												chart.draw(data, google.charts.Bar.convertOptions(options));
+								}
+
+								function drawChartHP() {
+												var data = google.visualization.arrayToDataTable([
+																['', ''],
+																['HP', {{ isset($simulador->lucro_hp) ? $simulador->lucro_hp : 0 }}]
+												]);
+												var cordeg = '{{ $simulador->lucro_hp > 0 ? '#0000FF' : '#004411' }}';
+												var cor = '{{ $simulador->lucro_hp > 0 ? 'blue' : 'red' }}';
+
+												var options = {
+																colors: [cor, cordeg],
+																chart: {
+																				title: 'Lucro',
+																},
+																bars: 'vertical' // Required for Material Bar Charts.
+												};
+
+												var chart = new google.charts.Bar(document.getElementById('chart_lucro_hp'));
+
+												chart.draw(data, google.charts.Bar.convertOptions(options));
+								}
 
 
+								google.charts.load('current', {
+												packages: ['corechart', 'line']
+								});
+								google.charts.setOnLoadCallback(drawBasicDell);
+								google.charts.setOnLoadCallback(drawBasicHP);
 
-																<div class="row">
-																				<button type="submit" class="btn btn-primary mt-3">Simular</button>
-																				<div>
-																								<form>
+								function drawBasicDell() {
 
-																												<div class="row">
-																																<button type="button" class="btn btn-warning mt-3"
-																																				onclick="self.location='{{ url('/parametros') }}'">Parâmetros do jogo</button>
-																																<div>
+												var data = new google.visualization.DataTable();
+												data.addColumn('number', 'X');
+												data.addColumn('number', 'Valor');
 
+												data.addRows([
+																[{{ $simulador->mercado_dell }}, {{ $simulador->dell_valor }}],
+																[{{ $simulador->mercado }}, 0]
+												]);
 
-																																				<div class="row">
-																																								<button type="button" class="btn btn-warning mt-3"
-																																												onclick="self.location='{{ url('/inicio') }}'">Iniciar o
-																																												jogo</button>
-																																								<div>
+												var options = {
+																hAxis: {
+																				title: 'Unidades'
+																},
+																vAxis: {
+																				title: 'Valor'
+																}
+												};
 
+												var chart = new google.visualization.LineChart(document.getElementById('chart_mercado_dell'));
 
-																																								</div>
-
-																																								<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
-																																								<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-
-
-																																								<script>
-																																												$("#combo_dell_investe")
-																																																.on("change", function() {
-
-																																																				if (this.value == 1) {
-																																																								$('#dell_investe').show()
-
-																																																				} else {
-																																																								$('#dell_investe').hide()
-																																																				}
-
-																																																});
-
-																																												$("#combo_hp_investe")
-																																																.on("change", function() {
-																																																				if (this.value == 1) {
-																																																								$('#hp_investe').show()
-																																																				} else {
-																																																								$('#hp_investe').hide()
-																																																				}
-																																																});
-																																								</script>
+												chart.draw(data, options);
+								}
 
 
+								function drawBasicHP() {
 
-																																								<script>
-																																												function formatarMoeda(input) {
-																																																var elemento = input;
-																																																var valor = elemento.value;
+												var data = new google.visualization.DataTable();
+												data.addColumn('number', 'X');
+												data.addColumn('number', 'Valor');
 
-																																																valor = valor + '';
-																																																valor = parseInt(valor.replace(/[\D]+/g, ''));
-																																																valor = valor + '';
-																																																valor = valor.replace(/([0-9]{2})$/g, ",$1");
+												data.addRows([
+																[{{ $simulador->mercado_hp }}, {{ $simulador->hp_valor }}],
+																[{{ $simulador->mercado }}, 0]
+												]);
 
-																																																if (valor.length > 6) {
-																																																				valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
-																																																}
+												var options = {
+																hAxis: {
+																				title: 'Unidades'
+																},
+																vAxis: {
+																				title: 'Valor'
+																}
+												};
 
-																																																elemento.value = valor;
-																																																if (valor == 'NaN') elemento.value = '';
-																																												}
-																																								</script>
-																																								@if (isset($simulador->lucro_dell))
-																																												<script type="text/javascript">
-																																																// Load the Visualization API and the corechart package.
-																																																google.charts.load('current', {
-																																																				'packages': ['bar']
-																																																});
+												var chart = new google.visualization.LineChart(document.getElementById('chart_mercado_hp'));
 
-																																																// Set a callback to run when the Google Visualization API is loaded.
-																																																google.charts.setOnLoadCallback(drawChartDell);
-																																																google.charts.setOnLoadCallback(drawChartHP);
-
-																																																// Callback that creates and populates a data table,
-																																																// instantiates the pie chart, passes in the data and
-																																																// draws it.
-																																																function drawChartDell() {
-																																																				var data = google.visualization.arrayToDataTable([
-																																																								['', ''],
-																																																								['DELL', {{ isset($simulador->lucro_dell) ? $simulador->lucro_dell : 0 }}]
-																																																				]);
-																																																				var cordeg = '{{ $simulador->lucro_dell > 0 ? '#0000FF' : '#004411' }}';
-																																																				var cor = '{{ $simulador->lucro_dell > 0 ? 'blue' : 'red' }}';
-
-																																																				var options = {
-																																																								colors: [cor, cordeg],
-																																																								chart: {
-																																																												title: 'Lucro',
-																																																								},
-																																																								bars: 'vertical' // Required for Material Bar Charts.
-																																																				};
-
-																																																				var chart = new google.charts.Bar(document.getElementById('chart_lucro_dell'));
-
-																																																				chart.draw(data, google.charts.Bar.convertOptions(options));
-																																																}
-
-																																																function drawChartHP() {
-																																																				var data = google.visualization.arrayToDataTable([
-																																																								['', ''],
-																																																								['HP', {{ isset($simulador->lucro_hp) ? $simulador->lucro_hp : 0 }}]
-																																																				]);
-																																																				var cordeg = '{{ $simulador->lucro_hp > 0 ? '#0000FF' : '#004411' }}';
-																																																				var cor = '{{ $simulador->lucro_hp > 0 ? 'blue' : 'red' }}';
-
-																																																				var options = {
-																																																								colors: [cor, cordeg],
-																																																								chart: {
-																																																												title: 'Lucro',
-																																																								},
-																																																								bars: 'vertical' // Required for Material Bar Charts.
-																																																				};
-
-																																																				var chart = new google.charts.Bar(document.getElementById('chart_lucro_hp'));
-
-																																																				chart.draw(data, google.charts.Bar.convertOptions(options));
-																																																}
-
-
-																																																google.charts.load('current', {
-																																																				packages: ['corechart', 'line']
-																																																});
-																																																google.charts.setOnLoadCallback(drawBasicDell);
-																																																google.charts.setOnLoadCallback(drawBasicHP);
-
-																																																function drawBasicDell() {
-
-																																																				var data = new google.visualization.DataTable();
-																																																				data.addColumn('number', 'X');
-																																																				data.addColumn('number', 'Valor');
-
-																																																				data.addRows([
-																																																								[{{ $simulador->mercado_dell }}, {{ $simulador->dell_valor }}],
-																																																								[{{ $simulador->mercado }}, 0]
-																																																				]);
-
-																																																				var options = {
-																																																								hAxis: {
-																																																												title: 'Unidades'
-																																																								},
-																																																								vAxis: {
-																																																												title: 'Valor'
-																																																								}
-																																																				};
-
-																																																				var chart = new google.visualization.LineChart(document.getElementById('chart_mercado_dell'));
-
-																																																				chart.draw(data, options);
-																																																}
-
-
-																																																function drawBasicHP() {
-
-																																																				var data = new google.visualization.DataTable();
-																																																				data.addColumn('number', 'X');
-																																																				data.addColumn('number', 'Valor');
-
-																																																				data.addRows([
-																																																								[{{ $simulador->mercado_hp }}, {{ $simulador->hp_valor }}],
-																																																								[{{ $simulador->mercado }}, 0]
-																																																				]);
-
-																																																				var options = {
-																																																								hAxis: {
-																																																												title: 'Unidades'
-																																																								},
-																																																								vAxis: {
-																																																												title: 'Valor'
-																																																								}
-																																																				};
-
-																																																				var chart = new google.visualization.LineChart(document.getElementById('chart_mercado_hp'));
-
-																																																				chart.draw(data, options);
-																																																}
-																																												</script>
-																																								@endif
-</body>
-
-</html>
+												chart.draw(data, options);
+								}
+				</script>
+@endif

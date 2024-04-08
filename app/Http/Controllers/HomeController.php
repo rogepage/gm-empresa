@@ -35,6 +35,8 @@ class HomeController extends Controller
 
     public function simular(Request $request)
     {
+        $request->session()->forget('jogadas');
+        $request->session()->forget('empresa');
         $data = $request->all();
         $simulador = $this->simuladorService->simulaJogada($data);
         $parametro = $this->parametrosService->get();
@@ -49,10 +51,9 @@ class HomeController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->all());
+
         $parametro = $this->parametrosService->get();
         $parametro->update($request->all());
-        // return view('parametros')->with('parametro', $parametro)->with('sucesso', 'Parametros atualizados com sucesso');
         return back()
             ->with('sucesso', 'Parametros atualizados com sucesso');
     }
@@ -78,22 +79,35 @@ class HomeController extends Controller
             ->with('sucesso', 'Reset de parametros realizado com sucesso');
     }
 
-    public function inicio()
+    public function inicio(Request $request)
     {
+        $request->session()->forget('jogadas');
+        $request->session()->forget('empresa');
         return view('inicio');
     }
 
     public function selecao_empresa(Request $request)
     {
-        $request->session()->forget('jogadas');
-        return view('jogada')->with('jogadas', []);
+        // dd($request->all());
+        $request->session()->put('empresa', $request->get('empresa'));
+
+
+        return redirect()->route('jogadas');
+    }
+
+    public function jogadas(Request $request)
+    {
+        return view('jogada')->with('jogadas', [])->with('empresa', $request->session()->get('empresa'));
     }
 
     public function jogada_gravar(Request $request)
     {
         $data = $request->all();
-        $simulador = $this->simuladorService->simulaJogada($data);
-        $jogadas =  $request->session()->get('jogadas');
+        $empresa = $request->session()->get('empresa');
+        $jogadas =  $request->session()->get('jogadas') ?? [];
+
+        $simulador = $this->simuladorService->simulaJogada($data, count($jogadas), $empresa);
+
 
         if ($jogadas) {
             $jogadas = Arr::prepend($jogadas,  $simulador);
@@ -105,8 +119,9 @@ class HomeController extends Controller
 
         if (count($jogadas) <= 3) {
             return view('jogada')
-                ->with('sucesso', 'Parabéns sua jogado foi realizado com sucesso')
-                ->with('jogadas', $jogadas);
+                ->with('sucesso', 'Parabéns sua jogada foi aceita com sucesso')
+                ->with('jogadas', $jogadas)
+                ->with('empresa', $empresa);
         }
         return redirect()->route('resultado');
     }
@@ -114,7 +129,6 @@ class HomeController extends Controller
     public function resultado(Request $request)
     {
         $jogadas =  $request->session()->get('jogadas');
-        // dd($jogadas);
         return view('resultado', compact('jogadas'));
     }
 }

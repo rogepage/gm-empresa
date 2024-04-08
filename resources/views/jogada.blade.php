@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
-				<title>Spartansite :: Jogos de Empresas</title>
-				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-</head>
-
-<body>
+@extends('layout.site')
+@section('content')
 				<div class="container">
-								<h1 class="text-center">Joga</h1>
+								<h1 class="text-center">Rodadas</h1>
 								<form action="{{ route('jogada.gravar') }}" method="POST" id="quickForm">
 												@csrf
 												@if (isset($sucesso))
@@ -27,7 +17,7 @@
 																<div class="col">
 																				<div class="card">
 																								<div class="card-body">
-																												<h5 class="card-title">Dell</h5>
+																												<h5 class="card-title"><strong>{{ $empresa }}</strong> </h5>
 																												{{-- <form> --}}
 																												<div class="mb-3">
 																																<label for="campo1" class="form-label">Preço (R$)</label>
@@ -94,7 +84,7 @@
 
 																				<div class="row">
 																								<button type="button" class="btn btn-warning mt-3"
-																												onclick="self.location='{{ url('/inicio') }}'">Voltar
+																												onclick="self.location='{{ url('/inicio') }}'">Reiniciar
 																								</button>
 
 																				</div>
@@ -102,10 +92,4 @@
 												</div>
 								</form>
 				</div>
-
-
-
-
-</body>
-
-</html>
+@endsection

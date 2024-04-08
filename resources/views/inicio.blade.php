@@ -1,26 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layout.site')
 
-<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
-				<title>Spartansite :: Jogos de Empresas</title>
-				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-</head>
+@section('content')
+				<section class="section-internal-header">
+								<div class="row">
+												<div class="container">
+																<div class="title">
+																				<h2>Iniciar o jogo</h2>
+																</div>
+												</div>
+								</div>
+				</section>
 
-<body>
 				<div class="container">
-								<h1 class="text-center">Iniciar o jogo</h1>
+
 								<form action="{{ route('selecao.empresa') }}" method="POST" id="quickForm">
 												@csrf
 
-												<div class="row">
+												<div class="row" style="padding: 100px">
 
 
-																<div>
+																<div class="text-left">
 																				<h1> Sobre o jogo </h1>
-																				<p>
+																				<p class="text-left">
 																								- Serão ao todo 4 rodadas e o resultado será apresentado no final.<br>
 																								- A partir da 3 rodada será disponibilizado a opção investimento.<br>
 																								- Vence a empresa que tiver o melhor resultado ao final das 4 rodadas <br>
@@ -41,17 +42,17 @@
 																												<div class="row align-items-start">
 																																<div class="col">
 																																				<div class="form-check">
-																																								<input class="form-check-input" type="radio" value="DELL" name="empresa"
-																																												id="flexRadioDefault1">
-																																								<label class="form-check-label" for="flexRadioDefault1">
-																																												DELL
-																																								</label>
+																																								<input class="form-check-input" required type="radio" value="DELL"
+																																												name="empresa" id="flexRadioDefault1">
+
+																																								DELL
+
 																																				</div>
 																																</div>
 																																<div class="col">
 																																				<div class="form-check">
-																																								<input class="form-check-input" type="radio" value="HP" name="empresa"
-																																												id="flexRadioDefault1">
+																																								<input class="form-check-input" required type="radio" value="HP"
+																																												name="empresa" id="flexRadioDefault1">
 																																								<label class="form-check-label" for="flexRadioDefault1">
 																																												HP
 																																								</label>
@@ -66,33 +67,17 @@
 																</div>
 												</div>
 
-
-
 												<div class="row">
-
-
-																<div>
-																				<br><br>
-																				<div class="row">
-																								<button type="submit" class="btn btn-primary mt-3">Iniciar</button>
-
-																				</div>
-
-																				<div class="row">
-																								<button type="button" class="btn btn-warning mt-3"
-																												onclick="self.location='{{ url('/simulador') }}'">Voltar
-																								</button>
-
-																				</div>
+																<div class="col-md-6">
+																				<button type="submit" class="btn btn-primary mt-3">Iniciar Jogo</button>
+																</div>
+																<div class="col-md-6">
+																				<button type="button" class="btn btn-warning mt-3" onclick="self.location='{{ url('/simulador') }}'">Ir
+																								para o simulador
+																				</button>
 																</div>
 												</div>
+
+
 				</div>
-
-
-
-				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
-				<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-
-</body>
-
-</html>
+@endsection
