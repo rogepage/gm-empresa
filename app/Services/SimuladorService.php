@@ -12,7 +12,7 @@ class SimuladorService
     }
 
 
-    public function simulaJogada(array $data): stdClass
+    public function simulaJogada(array $data, $rodada = 0, $empresa = false): stdClass
     {
 
         // retorna do banco os parametros
@@ -22,12 +22,31 @@ class SimuladorService
         // padroniza os valores em moedas
         $dell_valor = $this->converteMoedaFloat(isset($data['dell_valor']) ? $data['dell_valor'] : $this->valorProdRandomico());
         $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRandomico());
-        $dell_folha = $this->converteMoedaFloat($data['dell_folha'] ?: 0);
-        $hp_folha = $this->converteMoedaFloat($data['hp_folha'] ?: 0);
-        $dell_publicidade = $this->converteMoedaFloat($data['dell_publicidade'] ?: 0);
-        $hp_publicidade = $this->converteMoedaFloat($data['hp_publicidade'] ?: 0);
-        $dell_investimento =  isset($data['dell_investimento']) ? true : false;
-        $hp_investimento =  isset($data['hp_investimento']) ? true : false;
+        $dell_folha = $this->converteMoedaFloat(isset($data['dell_folha']) ? $data['dell_folha'] : 0);
+        $hp_folha = $this->converteMoedaFloat(isset($data['hp_folha']) ? $data['hp_folha'] : 0);
+        $dell_publicidade = $this->converteMoedaFloat(isset($data['dell_publicidade']) ? $data['dell_publicidade'] : 0);
+        $hp_publicidade = $this->converteMoedaFloat(isset($data['hp_publicidade']) ? $data['hp_publicidade'] : 0);
+        if ($empresa == false) {
+            $dell_investimento =  (bool)$data['dell_investimento'];
+            $hp_investimento =  (bool)$data['hp_investimento'];
+        } else {
+            $dell_investimento =  false;
+            $hp_investimento =  false;
+        }
+
+        if ($empresa) {
+            if ($rodada >= 2) {
+                if ($empresa == 'DELL') {
+                    $hp_investimento =  (bool)rand(0, 1);
+                    $dell_investimento =  (bool) isset($data['dell_investimento']) ? $data['dell_investimento'] : 0;
+                } else {
+                    $dell_investimento =  (bool)rand(0, 1);
+                    $hp_investimento = (bool) isset($data['hp_investimento']) ? $data['hp_investimento'] : 0;
+                }
+            }
+        }
+
+
 
         $custo_direto = $this->converteMoedaFloat($obj->custo_direto);
         $valor_maximo_produto = $this->converteMoedaFloat($obj->valor_maximo_produto);
@@ -212,6 +231,6 @@ class SimuladorService
 
     private function valorProdRandomico()
     {
-        return round(mt_rand(1800, 5500));
+        return round(mt_rand(1800, 4500));
     }
 }
