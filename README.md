@@ -20,5 +20,6 @@ docker run --rm \
 
 docker exec -it gm-empresa-laravel.test-1 /bin/bash
 
-
 php artisan make:session-table
+
+curl -s "https://laravel.build/example-app?php=83" | bash
