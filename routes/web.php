@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 //     return view('simula');
 // });
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'home']);
+Route::get('/', [App\Http\Controllers\HomeController::class, 'simulador']);
 
-Route::get('/simulador', [App\Http\Controllers\HomeController::class, 'simulador']);
+Route::get('/simulador', [App\Http\Controllers\HomeController::class, 'simulador'])->name('simulador');
 
 Route::post('/simulador/simular', [App\Http\Controllers\HomeController::class, 'simular'])->name('simulador.simular');
 
@@ -28,6 +28,8 @@ Route::get('/inicio', [App\Http\Controllers\HomeController::class, 'inicio'])->n
 Route::post('/selecao/empresa', [App\Http\Controllers\HomeController::class, 'selecao_empresa'])->name('selecao.empresa');
 
 Route::get('/jogadas', [App\Http\Controllers\HomeController::class, 'jogadas'])->name('jogadas');
+Route::get('/jogadas/reiniciar', [App\Http\Controllers\HomeController::class, 'reiniciar'])->name('jogadas.reiniciar');
+
 
 
 Route::post('/jogada/gravar', [App\Http\Controllers\HomeController::class, 'jogada_gravar'])->name('jogada.gravar');

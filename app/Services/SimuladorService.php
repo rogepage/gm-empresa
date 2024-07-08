@@ -26,13 +26,13 @@ class SimuladorService
         $hp_folha = $this->converteMoedaFloat(isset($data['hp_folha']) ? $data['hp_folha'] : 0);
         $dell_publicidade = $this->converteMoedaFloat(isset($data['dell_publicidade']) ? $data['dell_publicidade'] : 0);
         $hp_publicidade = $this->converteMoedaFloat(isset($data['hp_publicidade']) ? $data['hp_publicidade'] : 0);
-        if ($empresa == false) {
-            $dell_investimento =  (bool)$data['dell_investimento'];
-            $hp_investimento =  (bool)$data['hp_investimento'];
-        } else {
-            $dell_investimento =  false;
-            $hp_investimento =  false;
-        }
+        // if ($empresa == false) {
+        //     $dell_investimento =  (bool)$data['dell_investimento'];
+        //     $hp_investimento =  (bool)$data['hp_investimento'];
+        // } else {
+        //     $dell_investimento =  false;
+        //     $hp_investimento =  false;
+        // }
 
         if ($empresa) {
             if ($rodada >= 2) {
@@ -104,10 +104,10 @@ class SimuladorService
 
         $custoTotalDell = ($mercadoDell * $custo_direto);
         $aInvestDell = 0;
-        if ($dell_investimento) {
-            $custoTotalDell = ($mercadoDell * $custo_direto);
-            $aInvestDell = $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
-        }
+        // if ($dell_investimento) {
+        //     $custoTotalDell = ($mercadoDell * $custo_direto);
+        //     $aInvestDell = $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
+        // }
 
 
 
@@ -146,10 +146,10 @@ class SimuladorService
         $custoTotalHP = ($mercadoHP * $custo_direto);
         $aInvestHP = 0;
 
-        if ($hp_investimento) {
-            $custoTotalHP = ($mercadoHP * $custo_direto);
-            $aInvestHP =  $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
-        }
+        // if ($hp_investimento) {
+        //     $custoTotalHP = ($mercadoHP * $custo_direto);
+        //     $aInvestHP =  $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
+        // }
 
         $margemHP = $receitaHP - $custoTotalHP;
         $lucroHPSemForm = $margemHP - $despesa_fixa -  $aInvestHP;
@@ -168,8 +168,13 @@ class SimuladorService
         $simulador->dell_valor = $dell_valor;
         $simulador->hp_valor = $hp_valor;
         $simulador->valor_investimento = $valor_investimento;
-        $simulador->hp_investe = $hp_investimento;
-        $simulador->dell_investe = $dell_investimento;
+        $simulador->despesas_fixa_dell = $despesa_fixa;
+        $simulador->despesas_fixa_hp = $despesa_fixa;
+        // $simulador->despesas_fixa_hp = $aInvestHP;
+        // $simulador->despesas_fixa_hp = $aInvestHP;
+
+        // $simulador->hp_investe = $hp_investimento;
+        // $simulador->dell_investe = $dell_investimento;
 
         return $simulador;
     }

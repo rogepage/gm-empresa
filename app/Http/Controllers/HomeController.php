@@ -19,28 +19,40 @@ class HomeController extends Controller
         protected readonly ParametrosService $parametrosService,
 
     ) {
+
     }
 
-    public function home()
+    public function home(Request $request)
     {
-
+        $request->session()->forget('jogadas');
         return view('home');
     }
 
-    public function simulador()
+    public function simulador(Request $request)
     {
         $parametro = $this->parametrosService->get();
-        return view('simulador')->with('form', [])->with('simulador', false)->with('parametro', $parametro);
+        $jogadas =  $request->session()->get('jogadas') ?? [];
+        // var_dump($jogadas);
+        return view('simulador')
+            ->with('form', [])
+            ->with('simulador', false)
+            ->with('jogadas',$jogadas)
+            ->with('parametro', $parametro);
     }
 
     public function simular(Request $request)
     {
-        $request->session()->forget('jogadas');
-        $request->session()->forget('empresa');
+      
+        $jogadas =  $request->session()->get('jogadas') ?? [];
+        // var_dump($jogadas);
         $data = $request->all();
         $simulador = $this->simuladorService->simulaJogada($data);
         $parametro = $this->parametrosService->get();
-        return view('simulador')->with('form', $data)->with('simulador', $simulador)->with('parametro', $parametro);
+        return view('simulador')
+                ->with('form', $data)
+                ->with('simulador', $simulador)
+                ->with('jogadas',$jogadas)
+                ->with('parametro', $parametro);
     }
 
     public function parametros()
@@ -83,8 +95,17 @@ class HomeController extends Controller
     {
         $request->session()->forget('jogadas');
         $request->session()->forget('empresa');
-        return view('inicio');
+        return redirect()->route('simulador');
     }
+
+    public function reiniciar(Request $request)
+    {
+        $request->session()->forget('jogadas');
+        $request->session()->forget('empresa');
+        return redirect()->route('simulador');
+    }
+
+   
 
     public function selecao_empresa(Request $request)
     {
@@ -97,7 +118,9 @@ class HomeController extends Controller
 
     public function jogadas(Request $request)
     {
-        return view('jogada')->with('jogadas', [])->with('empresa', $request->session()->get('empresa'));
+        $jogadas =  $request->session()->get('jogadas') ?? [];
+        // var_dump($jogadas);
+        return view('jogada')->with('jogadas', $jogadas)->with('empresa', $request->session()->get('empresa'));
     }
 
     public function jogada_gravar(Request $request)
@@ -117,18 +140,26 @@ class HomeController extends Controller
         $request->session()->put('jogadas', $jogadas);
 
 
-        if (count($jogadas) <= 3) {
-            return view('jogada')
-                ->with('sucesso', 'Parabéns sua jogada foi aceita com sucesso')
-                ->with('jogadas', $jogadas)
-                ->with('empresa', $empresa);
-        }
+        
         return redirect()->route('resultado');
     }
 
     public function resultado(Request $request)
     {
         $jogadas =  $request->session()->get('jogadas');
-        return view('resultado', compact('jogadas'));
+        $acumulado_dell = 0;
+        $acumulado_hp = 0;
+        if(isset($jogadas[0])){
+            $acumulado_dell += ($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - $jogadas[0]->despesas_fixa_dell;
+            $acumulado_hp += ($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - $jogadas[0]->despesas_fixa_hp;
+        }
+
+        if(isset($jogadas[1])){
+            $acumulado_dell += ($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - $jogadas[1]->despesas_fixa_dell;
+            $acumulado_hp += ($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - $jogadas[1]->despesas_fixa_hp;
+        }
+
+    
+        return view('resultado', compact('jogadas','acumulado_dell','acumulado_hp'));
     }
 }

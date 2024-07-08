@@ -1,143 +1,151 @@
-@extends('layout.site')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ asset('css/res.estilo.css') }}" rel="stylesheet" />
+    <title>Jogo Spartan</title>
+    
+</head>
 
-@section('content')
-				<div class="container">
-								<h1 class="text-center">Resultado</h1>
+<body>
 
-								<div class="col-md-12">
-												<div id=""> Vencedor:
+	<div class="steps-container">
+        <div class="step">
+            <div class="circle gray">1</div>
+            <div class="label">SIMULADOR</div>
+        </div>
+        <div class="line"></div>
+        <div class="step">
+            <div class="circle {{count($jogadas)<=1? 'orange':'gray'}}">2</div>
+            <div class="label">1a. JOGADA</div>
+        </div>
+        <div class="line"></div>
+        <div class="step">
+            <div class="circle {{count($jogadas)>1? 'orange':'gray'}}">3</div>
+            <div class="label">2a. JOGADA</div>
+        </div>
+    </div>
+	
 
-																@if (
-																				$jogadas[0]->lucro_dell + $jogadas[1]->lucro_dell + $jogadas[2]->lucro_dell + $jogadas[3]->lucro_dell >
-																								$jogadas[0]->lucro_hp + $jogadas[1]->lucro_hp + $jogadas[2]->lucro_hp + $jogadas[3]->lucro_hp)
-																				<strong> DELL </strong>
-																@else
-																				<strong> HP</strong>
-																@endif
+	
+	<div class="container">
 
-												</div>
-								</div>
-								<br>
-								<br>
+		<div class="results">
+			<h2>RESULTADOS</h2>
+			<br>
+			<br>
+			
+			<table class="tb-jogada1">
+				<tr>
+					<td id="col"></td>
+					<td id="dl">DELL</td>
+					<td id="hp">HP</td>
+				</tr>
+				
+				<tr>
+					<td id="col">Quantidade vendida 1ª jogada</td>
+					<td>{{$jogadas[0]->mercado_dell}}</td>
+					<td>{{$jogadas[0]->mercado_hp}}</td>
+				</tr>
+				<tr>
+					<td id="col">Preço de venda</td>
+					<td>{{$jogadas[0]->dell_valor}}</td>
+					<td>{{$jogadas[0]->hp_valor}}</td>
+				</tr>
+				<!-- <tr>
+					<td id="col">Receita de venda</td>
+					<td>2.516.000</td>
+					<td>2.450.000</td>
+				</tr>
+				<tr>
+					<td id="col">(-) Custo fabricação</td>
+					<td>1.110.000</td>
+					<td>1.050.000</td>
+				</tr> -->
+				<tr>
+					<td id="col">(-) Despesas fixas</td>
+					<td>{{$jogadas[0]->despesas_fixa_dell}}</td>
+					<td>{{$jogadas[0]->despesas_fixa_hp}}</td>
+				</tr>
+				<tr>
+					<td id="col">(=) Lucro</td>
+					<td>{{($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - $jogadas[0]->despesas_fixa_dell}}</td>
+					<td>{{($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - $jogadas[0]->despesas_fixa_hp}}</td>
+				</tr>
+			</table>
+			
 
-								<div class="container">
-												<div class="row">
-																<div class="col-sm">
-																				<div id="chart_lucro_trimestral" style="width: 500px; height: 500px;"></div>
-																</div>
-																<div class="col-sm">
-																				<div id="chart_mercado" style="width: 500px; height: 500px;"></div>
-																</div>
-																{{-- 
-																<div class="col-sm">
-																				<div id="chart_lucro" style="width: 500px; height: 500px;"></div>
-																</div> --}}
+				<br>
+				<br>
+				<br>
+			
+			<table class="tb-jogada2">
+				<tr>
+					<td id="col">Quantidade vendida 2ª jogada</td>
+					<td>{{isset($jogadas[1]) ?  $jogadas[1]->mercado_dell:''}}</td>
+					<td>{{isset($jogadas[1]) ?  $jogadas[1]->mercado_hp:''}}</td>
+				</tr>
+				<tr>
+					<td id="col">Preço de venda</td>
+					<td>{{isset($jogadas[1]) ? $jogadas[1]->dell_valor:''}}</td>
+					<td>{{isset($jogadas[1]) ? $jogadas[1]->hp_valor:''}}</td>
+				</tr>
+				<!-- <tr>
+					<td id="col">Receita de venda</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td id="col">(-) Custo fabricação</td>
+					<td></td>
+					<td></td>
+				</tr> -->
+				<tr>
+					<td id="col">(-) Despesas fixas</td>
+					<td>{{isset($jogadas[1]) ?  $jogadas[1]->despesas_fixa_dell:''}}</td>
+					<td>{{isset($jogadas[1]) ?  $jogadas[1]->despesas_fixa_hp : ''}}</td>
+				</tr>
+				<tr>
+					<td id="col">(=) Lucro</td>
+					<td>{{ isset($jogadas[1]) ?  (($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - $jogadas[1]->despesas_fixa_dell):''}}</td>
+					<td>{{ isset($jogadas[1]) ?  (($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - $jogadas[1]->despesas_fixa_hp):''}}</td>
+				</tr>
 
-												</div>
-								</div>
+			</table>
+			
+			<br>
+			<br>
 
+			<table class="lucro-ac">
+				<tr>
+					<td id="col">Lucro acumulado</td>
+					<td>{{$acumulado_dell}}</td>
+					<td>{{$acumulado_hp}}</td>
+				</tr>
+			</table>
 
+				
 
-				</div>
+			<button class="back-button" id="btn-back">Voltar ao simulador</button>
 
-
-				</body>
-				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
-				<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-
-				<script>
-								function formatarMoeda(input) {
-												var elemento = input;
-												var valor = elemento.value;
-
-												valor = valor + '';
-												valor = parseInt(valor.replace(/[\D]+/g, ''));
-												valor = valor + '';
-												valor = valor.replace(/([0-9]{2})$/g, ",$1");
-
-												if (valor.length > 6) {
-																valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
-												}
-
-												elemento.value = valor;
-												if (valor == 'NaN') elemento.value = '';
-								}
-				</script>
-
-				<script type="text/javascript">
-								google.charts.load("current", {
-												packages: ['corechart', 'bar']
-								});
-
-								google.charts.setOnLoadCallback(drawChartLucro);
-								// google.charts.setOnLoadCallback(drawCharLucroTotal);
-								google.charts.setOnLoadCallback(drawChartMercado);
-
-
-								function drawChartLucro() {
-												var data = google.visualization.arrayToDataTable([
-																['12 meses', 'DELL', 'HP'],
-																['1 trimestre', {{ $jogadas[0]->lucro_dell }}, {{ $jogadas[0]->lucro_hp }}],
-																['2 trimestre', {{ $jogadas[1]->lucro_dell }}, {{ $jogadas[1]->lucro_hp }}],
-																['3 trimestre', {{ $jogadas[2]->lucro_dell }}, {{ $jogadas[2]->lucro_hp }}],
-																['4 trimestre', {{ $jogadas[3]->lucro_dell }}, {{ $jogadas[3]->lucro_hp }}]
-												]);
-
-												var options = {
-																chart: {
-																				title: 'Lucro por trimestre',
-																				subtitle: 'Lucro obitido por cada empresa por trimestre',
-																}
-
-												};
-
-												var chart = new google.charts.Bar(document.getElementById('chart_lucro_trimestral'));
-
-												chart.draw(data, google.charts.Bar.convertOptions(options));
-								}
+			<script>
+				document.getElementById('btn-back').onclick = function() {
+					window.location.href = "{{url('simulador')}}"
+				};
+			</script>
+			
+		
+	</div>
+	
+		
+	
+	
+	
+	
 
 
-								function drawCharLucroTotal() {
-												var data = google.visualization.arrayToDataTable([
-																['12 meses', 'DELL', 'HP'],
-																['ano',
-																				{{ $jogadas[0]->lucro_dell + $jogadas[1]->lucro_dell + $jogadas[2]->lucro_dell + $jogadas[3]->lucro_dell }},
-																				{{ $jogadas[0]->lucro_hp + $jogadas[1]->lucro_hp + $jogadas[2]->lucro_hp + $jogadas[3]->lucro_hp }}
-																]
-												]);
+</body>
 
-												var options = {
-																chart: {
-																				title: 'Lucro total',
-																				subtitle: 'Somatória do lucro de todos os trimestres',
-																},
-																bars: 'horizontal' // Required for Material Bar Charts.
-												};
 
-												var chart = new google.charts.Bar(document.getElementById('chart_lucro'));
-
-												chart.draw(data, google.charts.Bar.convertOptions(options));
-								}
-
-								function drawChartMercado() {
-												var data = google.visualization.arrayToDataTable([
-																['Task', 'Hours per Day'],
-																['DELL',
-																				{{ $jogadas[0]->mercado_dell + $jogadas[1]->mercado_dell + $jogadas[2]->mercado_dell + $jogadas[3]->mercado_dell }}
-																],
-																['HP',
-																				{{ $jogadas[0]->mercado_hp + $jogadas[1]->mercado_hp + $jogadas[2]->mercado_hp + $jogadas[3]->mercado_hp }}
-																]
-												]);
-
-												var options = {
-																title: 'Ganho de mercado',
-																is3D: true,
-												};
-
-												var chart = new google.visualization.PieChart(document.getElementById('chart_mercado'));
-												chart.draw(data, options);
-								}
-				</script>
-@endsection
+</html>
