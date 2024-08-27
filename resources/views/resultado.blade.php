@@ -12,17 +12,17 @@
 
 	<div class="steps-container">
         <div class="step">
-            <div class="circle gray">1</div>
+            <div class="circle gray">0</div>
             <div class="label">SIMULADOR</div>
         </div>
         <div class="line"></div>
         <div class="step">
-            <div class="circle {{count($jogadas)<=1? 'orange':'gray'}}">2</div>
+            <div class="circle {{count($jogadas)<=1? 'orange':'gray'}}">1</div>
             <div class="label">1a. JOGADA</div>
         </div>
         <div class="line"></div>
         <div class="step">
-            <div class="circle {{count($jogadas)>1? 'orange':'gray'}}">3</div>
+            <div class="circle {{count($jogadas)>1? 'orange':'gray'}}">2</div>
             <div class="label">2a. JOGADA</div>
         </div>
     </div>

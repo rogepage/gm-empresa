@@ -172,7 +172,7 @@ body {
     border: solid white;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .results-button:hover {
