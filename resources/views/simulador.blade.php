@@ -26,9 +26,11 @@
         </div>
     </div>
 
+    @if(count($jogadas)==1)
     <div>
         <h4>Encerrada</h4>
     </div>
+    @endif
 
     <form action="{{ route('simulador.simular') }}" method="POST" id="form">
 		@csrf
