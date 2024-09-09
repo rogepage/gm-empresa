@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="{{ asset('css/estilo.css') }}" rel="stylesheet" />
-    <title>Jogo Sparta</title>
+        <title>Jogo Sparta</title>
     
 </head>
 
@@ -126,16 +126,20 @@
     </form>
     <script>
        
-        // document.getElementById('btn').onclick = function() {
-        //     window.location.href = "{{url('jogadas')}}"
-        // };
-
-        // document.getElementById('btn2').onclick = function() {
-        //     window.location.href = "{{url('resultado')}}"
-        // };
-
-
-    </script>
+        document.getElementById("dell_valor").focus();
+        const formulario = document.getElementById('form');
+ 
+         // Adiciona o evento de keypress aos campos de entrada
+         formulario.addEventListener('keypress', function(event) {
+             // Verifica se a tecla pressionada é o Enter (código 13)
+             if (event.key === 'Enter') {
+                 event.preventDefault(); 
+                 formulario.submit();   
+             }
+         });
+ 
+ 
+     </script>
     <br>
     <div>
         @if(count($jogadas)<2)
