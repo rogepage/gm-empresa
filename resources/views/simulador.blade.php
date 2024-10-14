@@ -41,7 +41,7 @@
             
                 <!--<label for="campo1" class="form-label">Preço de venda</label>-->
 				<input type="text" class="form-control"
-					value="{{ old('dell_valor', isset($form['dell_valor']) ? $form['dell_valor'] : '') }}"
+					value="{{ old('dell_valor', isset($form['dell_valor']) ? $form['dell_valor'] : '3.500,00') }}"
 					id="dell_valor" name="dell_valor"	onkeyup="formatarMoeda(this)">
                 <br>
                 <br>
@@ -86,7 +86,7 @@
                 
 				<!--<label for="campo4" class="form-label">Preço de venda</label>-->
 				<input type="text" class="form-control" id="hp_valor" name="hp_valor"
-					value="{{ old('hp_valor', isset($form['hp_valor']) ? $form['hp_valor'] : '') }}"
+					value="{{ old('hp_valor', isset($form['hp_valor']) ? $form['hp_valor'] : '3.500,00') }}"
 					onkeyup="formatarMoeda(this)">
                 <br>
                 <br>

@@ -12,20 +12,22 @@ class SimuladorService
     }
 
 
-    public function simulaJogada(array $data, $rodada = 0, $empresa = false): stdClass
+    public function simulaJogada(array $data,  array $jogadas, bool $simulador =false,  bool $empresa = false): stdClass
     {
 
         // retorna do banco os parametros
         $obj = Parametro::find(1);
-
+        $rodada  = count($jogadas);
 
         // padroniza os valores em moedas
         $dell_valor = $this->converteMoedaFloat(isset($data['dell_valor']) ? $data['dell_valor'] : $this->valorProdRandomico());
-        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRandomico());
+        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRandomico($dell_valor,$jogadas,$simulador));
         $dell_folha = $this->converteMoedaFloat(isset($data['dell_folha']) ? $data['dell_folha'] : 0);
         $hp_folha = $this->converteMoedaFloat(isset($data['hp_folha']) ? $data['hp_folha'] : 0);
         $dell_publicidade = $this->converteMoedaFloat(isset($data['dell_publicidade']) ? $data['dell_publicidade'] : 0);
         $hp_publicidade = $this->converteMoedaFloat(isset($data['hp_publicidade']) ? $data['hp_publicidade'] : 0);
+
+       
         // if ($empresa == false) {
         //     $dell_investimento =  (bool)$data['dell_investimento'];
         //     $hp_investimento =  (bool)$data['hp_investimento'];
@@ -234,8 +236,27 @@ class SimuladorService
         return $total;
     }
 
-    private function valorProdRandomico()
+    private function valorProdRandomico(float $valor_dell = 0, array $jogadas=[], bool $simulador = false)
     {
-        return round(mt_rand(1800, 4500));
+        if($simulador){
+            return round(mt_rand(2750, 5500));  
+        }
+       
+        if($simulador===false && count($jogadas)===0){
+            if($valor_dell > 2750)  {
+                return $valor_dell-(0.1 * ($valor_dell - 2750));
+            }else{
+                return $valor_dell-(0.1 * (2750-$valor_dell));
+            }  
+        }elseif($simulador===false && count($jogadas)===1){
+            if($jogadas[0]->dell_valor<=5500){
+                return round(mt_rand($jogadas[0]->dell_valor, 5500)); 
+            }else{
+                return round(mt_rand(5500,$jogadas[0]->dell_valor)); 
+            }
+           
+           
+        }    
+           
     }
 }

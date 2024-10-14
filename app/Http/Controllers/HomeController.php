@@ -46,7 +46,7 @@ class HomeController extends Controller
         $jogadas =  $request->session()->get('jogadas') ?? [];
         // var_dump($jogadas);
         $data = $request->all();
-        $simulador = $this->simuladorService->simulaJogada($data);
+        $simulador = $this->simuladorService->simulaJogada($data,$jogadas,true);
         $parametro = $this->parametrosService->get();
         return view('simulador')
                 ->with('form', $data)
@@ -107,19 +107,10 @@ class HomeController extends Controller
 
    
 
-    public function selecao_empresa(Request $request)
-    {
-        // dd($request->all());
-        $request->session()->put('empresa', $request->get('empresa'));
-
-
-        return redirect()->route('jogadas');
-    }
-
     public function jogadas(Request $request)
     {
         $jogadas =  $request->session()->get('jogadas') ?? [];
-        // var_dump($jogadas);
+        $request->session()->put('empresa', 'Dell');
         return view('jogada')->with('jogadas', $jogadas)->with('empresa', $request->session()->get('empresa'));
     }
 
@@ -128,8 +119,8 @@ class HomeController extends Controller
         $data = $request->all();
         $empresa = $request->session()->get('empresa');
         $jogadas =  $request->session()->get('jogadas') ?? [];
-
-        $simulador = $this->simuladorService->simulaJogada($data, count($jogadas), $empresa);
+       
+        $simulador = $this->simuladorService->simulaJogada($data,$jogadas, false, $empresa);
 
 
         if ($jogadas) {
