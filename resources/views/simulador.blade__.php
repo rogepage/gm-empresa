@@ -41,7 +41,7 @@
             
                 <!--<label for="campo1" class="form-label">Preço de venda</label>-->
 				<input type="text" class="form-control"
-					value="{{ old('dell_valor', isset($form['dell_valor']) ? $form['dell_valor'] : '3.500,00') }}"
+					value="{{ old('dell_valor', isset($form['dell_valor']) ? $form['dell_valor'] : '') }}"
 					id="dell_valor" name="dell_valor"	onkeyup="formatarMoeda(this)">
                 <br>
                 <br>
@@ -86,7 +86,7 @@
                 
 				<!--<label for="campo4" class="form-label">Preço de venda</label>-->
 				<input type="text" class="form-control" id="hp_valor" name="hp_valor"
-					value="{{ old('hp_valor', isset($form['hp_valor']) ? $form['hp_valor'] : '3.500,00') }}"
+					value="{{ old('hp_valor', isset($form['hp_valor']) ? $form['hp_valor'] : '') }}"
 					onkeyup="formatarMoeda(this)">
                 <br>
                 <br>
@@ -142,13 +142,9 @@
      </script>
     <br>
     <div>
-
-       
-
         @if(count($jogadas)<2)
         <button class="jogada-button" id="btn" onClick="event.preventDefault(); window.location = '{{ route('jogadas') }}';">
-            Quero fazer a  @labelJogada(count($jogadas)) jogada
-
+            Quero fazer a  {{count($jogadas)+1}}ª jogada
         </button>
        
         @endif
@@ -167,7 +163,7 @@
    <br>
     @if(count($jogadas)>0)
     <div>
-        <button class="results-button" id="btn2" onClick="event.preventDefault(); window.location = '{{ route('resultado') }}';">Ver resultados da @labelJogada(count($jogadas)-1) jogada</button>
+        <button class="results-button" id="btn2" onClick="event.preventDefault(); window.location = '{{ route('resultado') }}';">Ver resultados {{count($jogadas)}}ª Jogada</button>
     </div>
     @endif
     

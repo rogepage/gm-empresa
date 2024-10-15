@@ -45,33 +45,25 @@
 				
 				<tr>
 					<td id="col">Quantidade vendida 1ª jogada</td>
-					<td>{{$jogadas[0]->mercado_dell}}</td>
-					<td>{{$jogadas[0]->mercado_hp}}</td>
+					<td>{{$jogadas[0]->mercado_dell??0}}</td>
+					<td> {{$jogadas[0]->mercado_hp}}</td>
 				</tr>
 				<tr>
 					<td id="col">Preço de venda</td>
-					<td>{{$jogadas[0]->dell_valor}}</td>
-					<td>{{$jogadas[0]->hp_valor}}</td>
+					<td>@money($jogadas[0]->dell_valor??0, 'BRL')</td>
+					<td>@money($jogadas[0]->hp_valor??0, 'BRL') </td>
 				</tr>
-				<!-- <tr>
-					<td id="col">Receita de venda</td>
-					<td>2.516.000</td>
-					<td>2.450.000</td>
-				</tr>
-				<tr>
-					<td id="col">(-) Custo fabricação</td>
-					<td>1.110.000</td>
-					<td>1.050.000</td>
-				</tr> -->
 				<tr>
 					<td id="col">(-) Despesas fixas</td>
-					<td>{{$jogadas[0]->despesas_fixa_dell}}</td>
-					<td>{{$jogadas[0]->despesas_fixa_hp}}</td>
+					<td> @money($jogadas[0]->despesas_fixa_dell??0, 'BRL')</td>
+					<td> @money($jogadas[0]->despesas_fixa_hp??0, 'BRL')</td>
 				</tr>
 				<tr>
 					<td id="col">(=) Lucro</td>
-					<td>{{($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - $jogadas[0]->despesas_fixa_dell}}</td>
-					<td>{{($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - $jogadas[0]->despesas_fixa_hp}}</td>
+					@php $dellLucro1 = (($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - $jogadas[0]->despesas_fixa_dell)@endphp
+					<td> @money($dellLucro1, 'BRL')</td>
+					@php $hpLucro1 = (($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - $jogadas[0]->despesas_fixa_hp) @endphp
+					<td>@money($hpLucro1, 'BRL')</td>
 				</tr>
 			</table>
 			
@@ -83,33 +75,56 @@
 			<table class="tb-jogada2">
 				<tr>
 					<td id="col">Quantidade vendida 2ª jogada</td>
-					<td>{{isset($jogadas[1]) ?  $jogadas[1]->mercado_dell:''}}</td>
-					<td>{{isset($jogadas[1]) ?  $jogadas[1]->mercado_hp:''}}</td>
+					<td> @if (isset($jogadas[1])) 
+						  {{$jogadas[1]->mercado_dell}}
+						 @endif
+					</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  {{$jogadas[1]->mercado_hp}}
+						 @endif
+					</td>
 				</tr>
 				<tr>
 					<td id="col">Preço de venda</td>
-					<td>{{isset($jogadas[1]) ? $jogadas[1]->dell_valor:''}}</td>
-					<td>{{isset($jogadas[1]) ? $jogadas[1]->hp_valor:''}}</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  @money($jogadas[1]->dell_valor, 'BRL')
+						 @endif
+						</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  @money($jogadas[1]->hp_valor, 'BRL')
+						@endif
+					</td>
 				</tr>
-				<!-- <tr>
-					<td id="col">Receita de venda</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td id="col">(-) Custo fabricação</td>
-					<td></td>
-					<td></td>
-				</tr> -->
 				<tr>
 					<td id="col">(-) Despesas fixas</td>
-					<td>{{isset($jogadas[1]) ?  $jogadas[1]->despesas_fixa_dell:''}}</td>
-					<td>{{isset($jogadas[1]) ?  $jogadas[1]->despesas_fixa_hp : ''}}</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  @money( $jogadas[1]->despesas_fixa_dell, 'BRL')
+						@endif
+						</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  @money($jogadas[1]->despesas_fixa_hp, 'BRL')
+						@endif
+						</td>
 				</tr>
 				<tr>
 					<td id="col">(=) Lucro</td>
-					<td>{{ isset($jogadas[1]) ?  (($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - $jogadas[1]->despesas_fixa_dell):''}}</td>
-					<td>{{ isset($jogadas[1]) ?  (($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - $jogadas[1]->despesas_fixa_hp):''}}</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  @php $dellValor2 = (($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - $jogadas[1]->despesas_fixa_dell) @endphp
+						  @money($dellValor2, 'BRL')
+						@endif
+						</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  @php $hpValor2 = (($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - $jogadas[1]->despesas_fixa_hp) @endphp
+						  @money($hpValor2, 'BRL')
+						@endif
+					</td>
 				</tr>
 
 			</table>
@@ -120,8 +135,8 @@
 			<table class="lucro-ac">
 				<tr>
 					<td id="col">Lucro acumulado</td>
-					<td>{{$acumulado_dell}}</td>
-					<td>{{$acumulado_hp}}</td>
+					<td>@money($acumulado_dell, 'BRL') </td>
+					<td>@money($acumulado_hp, 'BRL')</td>
 				</tr>
 			</table>
 
