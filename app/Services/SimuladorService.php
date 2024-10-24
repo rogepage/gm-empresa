@@ -172,6 +172,7 @@ class SimuladorService
         $simulador->valor_investimento = $valor_investimento;
         $simulador->despesas_fixa_dell = $despesa_fixa;
         $simulador->despesas_fixa_hp = $despesa_fixa;
+        $simulador->custo_direto= $obj->custo_direto;
         // $simulador->despesas_fixa_hp = $aInvestHP;
         // $simulador->despesas_fixa_hp = $aInvestHP;
 
@@ -246,7 +247,7 @@ class SimuladorService
             if($valor_dell > 2750)  {
                 return $valor_dell-(0.1 * ($valor_dell - 2750));
             }else{
-                return $valor_dell-(0.1 * (2750-$valor_dell));
+                return $valor_dell+(0.1 * (2750-$valor_dell));
             }  
         }elseif($simulador===false && count($jogadas)===1){
             if($jogadas[0]->dell_valor<=5500){
