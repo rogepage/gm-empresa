@@ -250,10 +250,10 @@ class SimuladorService
                 return $valor_dell+(0.1 * (2750-$valor_dell));
             }  
         }elseif($simulador===false && count($jogadas)===1){
-            if($jogadas[0]->dell_valor<=5500){
-                return round(mt_rand($jogadas[0]->dell_valor, 5500)); 
+            if($jogadas[0]->hp_valor>2750){
+                return round(mt_rand(2200,$jogadas[0]->hp_valor)); 
             }else{
-                return round(mt_rand(5500,$jogadas[0]->dell_valor)); 
+                return round(mt_rand($jogadas[0]->hp_valor,3300)); 
             }
            
            
