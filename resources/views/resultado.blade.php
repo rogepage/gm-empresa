@@ -29,7 +29,7 @@
 	
 
 	
-	<div class="container" style="border: 2px solid red;">
+	<div class="container" style="border: 2px solid red; min-width: 550px;">
 
 		<div class="results">
 			<h2>RESULTADOS</h2>
