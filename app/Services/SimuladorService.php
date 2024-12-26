@@ -245,10 +245,11 @@ class SimuladorService
        
         if($simulador===false && count($jogadas)===0){
             if($valor_dell > 2750)  {
-                return $valor_dell-(0.1 * ($valor_dell - 2750));
+                $valor = round(mt_rand($valor_dell-(0.1 * ($valor_dell-2750)), $valor_dell-(0.2 * ($valor_dell-2750))));
             }else{
-                return $valor_dell+(0.1 * (2750-$valor_dell));
+                $valor = round(mt_rand($valor_dell+(0.1 * (2750-$valor_dell)), $valor_dell+(0.2 * (2750-$valor_dell))));
             }  
+            return $valor;
         }elseif($simulador===false && count($jogadas)===1){
             if($jogadas[0]->hp_valor>2750){
                 return round(mt_rand(2200,$jogadas[0]->hp_valor)); 
