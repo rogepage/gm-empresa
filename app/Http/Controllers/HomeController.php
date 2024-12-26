@@ -135,7 +135,7 @@ class HomeController extends Controller
         return redirect()->route('resultado');
     }
 
-    public function resultado(Request $request)
+    public function resultado(Request $request, $display = true)
     {
         if(!$request->session()->has('jogadas')){
             return redirect()->route('simulador');
@@ -154,6 +154,6 @@ class HomeController extends Controller
         }
 
     
-        return view('resultado', compact('jogadas','acumulado_dell','acumulado_hp'));
+        return view('resultado', compact('jogadas','acumulado_dell','acumulado_hp','display'));
     }
 }

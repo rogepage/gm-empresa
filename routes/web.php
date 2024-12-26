@@ -33,7 +33,7 @@ Route::get('/jogadas/reiniciar', [App\Http\Controllers\HomeController::class, 'r
 
 
 Route::post('/jogada/gravar', [App\Http\Controllers\HomeController::class, 'jogada_gravar'])->name('jogada.gravar');
-Route::get('/resultado', [App\Http\Controllers\HomeController::class, 'resultado'])->name('resultado');
+Route::get('/resultado/{display?}', [App\Http\Controllers\HomeController::class, 'resultado'])->name('resultado');
 
 
 Route::get('/parametros', [App\Http\Controllers\HomeController::class, 'parametros']);

@@ -68,6 +68,16 @@ body {
     font-weight: bold;
 }
 
+
+.container2 {
+    background-color: #3F48CC;
+    color: white;
+    padding: 20px;
+    border: double white;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-weight: bold;
+}
 .tb-jogada1, .tb-jogada2 {
     display: flex;
     justify-content: space-between;

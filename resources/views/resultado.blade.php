@@ -9,7 +9,7 @@
 </head>
 
 <body>
-
+	@if($display==1)
 	<div class="steps-container">
         <div class="step">
             <div class="circle gray">0</div>
@@ -26,10 +26,14 @@
             <div class="label">2a. JOGADA</div>
         </div>
     </div>
+	@endif
 	
 
-	
+	@if($display==1)
 	<div class="container" style="border: 2px solid red; min-width: 550px;">
+	@else
+	<div class="container2" style="border: 0px solid red;">
+	@endif
 
 		<div class="results">
 			<h2>RESULTADOS</h2>
@@ -177,14 +181,15 @@
 			</table>
 
 				
+			@if($display==1)
+				<button class="back-button" id="btn-back">Voltar ao simulador</button>
 
-			<button class="back-button" id="btn-back">Voltar ao simulador</button>
-
-			<script>
-				document.getElementById('btn-back').onclick = function() {
-					window.location.href = "{{url('simulador')}}"
-				};
-			</script>
+				<script>
+					document.getElementById('btn-back').onclick = function() {
+						window.location.href = "{{url('simulador')}}"
+					};
+				</script>
+			@endif
 			
 		
 	</div>
