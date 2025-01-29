@@ -237,15 +237,27 @@ class SimuladorService
         return $total;
     }
 
-    private function valorProdRandomico(float $valor_dell = 0, array $jogadas=[], bool $simulador = false)
+    private function valorProdRandomico_old(float $valor_dell = 0, array $jogadas=[], bool $simulador = false)
     {
-        if($simulador){
-            return round(mt_rand(2750, 5500));  
+        $valorMinimo = 2750;
+        $valorMaximo = 5500;
+
+        if ($simulador) {
+            return round(mt_rand($valorMinimo, $valorMaximo));
         }
        
         if($simulador===false && count($jogadas)===0){
             if($valor_dell > 2750)  {
-                $valor = round(mt_rand($valor_dell-(0.1 * ($valor_dell-2750)), $valor_dell-(0.2 * ($valor_dell-2750))));
+                $p1 = ($valor_dell-(0.1 * ($valor_dell-2750)));
+                $p2 = ($valor_dell-(0.2 * ($valor_dell-2750)));
+
+
+                $diferenca = abs($valor_dell - $valorMinimo);
+                $percentualMenor = 0.1 * $diferenca;
+                $percentualMaior = 0.2 * $diferenca;
+
+                dd($p1,$p2,$valor_dell - $percentualMaior, $valor_dell - $percentualMenor);
+                $valor = round(mt_rand($p1,$p2));
             }else{
                 $valor = round(mt_rand($valor_dell+(0.1 * (2750-$valor_dell)), $valor_dell+(0.2 * (2750-$valor_dell))));
             }  
@@ -261,4 +273,47 @@ class SimuladorService
         }    
            
     }
+
+    private function valorProdRandomico(float $valorBase = 0, array $historicoJogadas = [], bool $simulador = false): int
+        {
+
+            $valorMinimo = 2750;
+            $valorMaximo = 5500;
+
+            if ($simulador) {
+                return round(mt_rand($valorMinimo, $valorMaximo));
+            }
+
+           
+
+            if (!$simulador && count($historicoJogadas) === 0) {
+                // Calcular variação proporcional ao valor base
+                $diferenca = abs($valorBase - $valorMinimo);
+                $percentualMenor = 0.1 * $diferenca;
+                $percentualMaior = 0.2 * $diferenca;
+
+                if ($valorBase > $valorMinimo) {
+                    return round(mt_rand($valorBase - $percentualMaior, $valorBase - $percentualMenor));
+                } else {
+                    return round(mt_rand($valorBase + $percentualMenor, $valorBase + $percentualMaior));
+                }
+            }
+
+            if (!$simulador && count($historicoJogadas) === 1) {
+                $hpValor = $historicoJogadas[0]->hp_valor ?? null;
+
+                if ($hpValor === null) {
+                    throw new \InvalidArgumentException("Elemento de histórico inválido ou sem o atributo 'hp_valor'.");
+                }
+
+                if ($hpValor > $valorMinimo) {
+                    return round(mt_rand(2200, $hpValor));
+                } else {
+                    return round(mt_rand($hpValor, 3300));
+                }
+            }
+
+            // Caso nenhum dos cenários seja atendido, lançar exceção ou retornar um valor padrão.
+            throw new \LogicException("Condição de entrada não suportada.");
+        }
 }

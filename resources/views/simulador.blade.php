@@ -65,8 +65,7 @@
 			
 
             <div class="result">
-                
-                <input type="text" value="{{$simulador? $simulador->mercado_dell:''}}">
+                <input type="text" id="mercado_dell" value="{{$simulador? $simulador->mercado_dell:''}}" readonly>
             </div>
            
         </div>
@@ -110,7 +109,7 @@
             
            
             <div class="result">
-                <input type="text" value="{{$simulador ? $simulador->mercado_hp:''}}">
+                <input type="text" id="mercado_hp" value="{{$simulador ? $simulador->mercado_hp:''}}" readonly>
             </div>
         </div>
 
@@ -125,6 +124,14 @@
 
     </form>
     <script>
+
+        // Adiciona um evento de clique a todos os campos do formulário
+        document.querySelectorAll('input, textarea, select').forEach(function(field) {
+            field.addEventListener('click', function() {
+                document.getElementById('mercado_hp').value = '';
+                document.getElementById('mercado_dell').value = '';
+            });
+        });
        
         document.getElementById("dell_valor").focus();
         const formulario = document.getElementById('form');
@@ -166,9 +173,9 @@
 
    <br>
     @if(count($jogadas)>0)
-    <div>
+    <?php /* <div>
         <button class="results-button" id="btn2" onClick="event.preventDefault(); window.location = '{{ route('resultado') }}';">Ver resultados da @labelJogada(count($jogadas)-1) jogada</button>
-    </div>
+    </div> */ ?>
 
     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
         <iframe src="{{ route('resultado', ['display' => 0]) }}" 
