@@ -12,27 +12,29 @@ class SimuladorService
     }
 
 
-    public function simulaJogada(array $data, $rodada = 0, $empresa = false): stdClass
+    public function simulaJogada(array $data,  array $jogadas, bool $simulador =false,  bool $empresa = false): stdClass
     {
 
         // retorna do banco os parametros
         $obj = Parametro::find(1);
-
+        $rodada  = count($jogadas);
 
         // padroniza os valores em moedas
         $dell_valor = $this->converteMoedaFloat(isset($data['dell_valor']) ? $data['dell_valor'] : $this->valorProdRandomico());
-        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRandomico());
+        $hp_valor = $this->converteMoedaFloat(isset($data['hp_valor']) ? $data['hp_valor'] : $this->valorProdRandomico($dell_valor,$jogadas,$simulador));
         $dell_folha = $this->converteMoedaFloat(isset($data['dell_folha']) ? $data['dell_folha'] : 0);
         $hp_folha = $this->converteMoedaFloat(isset($data['hp_folha']) ? $data['hp_folha'] : 0);
         $dell_publicidade = $this->converteMoedaFloat(isset($data['dell_publicidade']) ? $data['dell_publicidade'] : 0);
         $hp_publicidade = $this->converteMoedaFloat(isset($data['hp_publicidade']) ? $data['hp_publicidade'] : 0);
-        if ($empresa == false) {
-            $dell_investimento =  (bool)$data['dell_investimento'];
-            $hp_investimento =  (bool)$data['hp_investimento'];
-        } else {
-            $dell_investimento =  false;
-            $hp_investimento =  false;
-        }
+
+       
+        // if ($empresa == false) {
+        //     $dell_investimento =  (bool)$data['dell_investimento'];
+        //     $hp_investimento =  (bool)$data['hp_investimento'];
+        // } else {
+        //     $dell_investimento =  false;
+        //     $hp_investimento =  false;
+        // }
 
         if ($empresa) {
             if ($rodada >= 2) {
@@ -104,10 +106,10 @@ class SimuladorService
 
         $custoTotalDell = ($mercadoDell * $custo_direto);
         $aInvestDell = 0;
-        if ($dell_investimento) {
-            $custoTotalDell = ($mercadoDell * $custo_direto);
-            $aInvestDell = $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
-        }
+        // if ($dell_investimento) {
+        //     $custoTotalDell = ($mercadoDell * $custo_direto);
+        //     $aInvestDell = $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
+        // }
 
 
 
@@ -146,10 +148,10 @@ class SimuladorService
         $custoTotalHP = ($mercadoHP * $custo_direto);
         $aInvestHP = 0;
 
-        if ($hp_investimento) {
-            $custoTotalHP = ($mercadoHP * $custo_direto);
-            $aInvestHP =  $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
-        }
+        // if ($hp_investimento) {
+        //     $custoTotalHP = ($mercadoHP * $custo_direto);
+        //     $aInvestHP =  $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
+        // }
 
         $margemHP = $receitaHP - $custoTotalHP;
         $lucroHPSemForm = $margemHP - $despesa_fixa -  $aInvestHP;
@@ -168,8 +170,14 @@ class SimuladorService
         $simulador->dell_valor = $dell_valor;
         $simulador->hp_valor = $hp_valor;
         $simulador->valor_investimento = $valor_investimento;
-        $simulador->hp_investe = $hp_investimento;
-        $simulador->dell_investe = $dell_investimento;
+        $simulador->despesas_fixa_dell = $despesa_fixa;
+        $simulador->despesas_fixa_hp = $despesa_fixa;
+        $simulador->custo_direto= $obj->custo_direto;
+        // $simulador->despesas_fixa_hp = $aInvestHP;
+        // $simulador->despesas_fixa_hp = $aInvestHP;
+
+        // $simulador->hp_investe = $hp_investimento;
+        // $simulador->dell_investe = $dell_investimento;
 
         return $simulador;
     }
@@ -229,8 +237,83 @@ class SimuladorService
         return $total;
     }
 
-    private function valorProdRandomico()
+    private function valorProdRandomico_old(float $valor_dell = 0, array $jogadas=[], bool $simulador = false)
     {
-        return round(mt_rand(1800, 4500));
+        $valorMinimo = 2750;
+        $valorMaximo = 5500;
+
+        if ($simulador) {
+            return round(mt_rand($valorMinimo, $valorMaximo));
+        }
+       
+        if($simulador===false && count($jogadas)===0){
+            if($valor_dell > 2750)  {
+                $p1 = ($valor_dell-(0.1 * ($valor_dell-2750)));
+                $p2 = ($valor_dell-(0.2 * ($valor_dell-2750)));
+
+
+                $diferenca = abs($valor_dell - $valorMinimo);
+                $percentualMenor = 0.1 * $diferenca;
+                $percentualMaior = 0.2 * $diferenca;
+
+                dd($p1,$p2,$valor_dell - $percentualMaior, $valor_dell - $percentualMenor);
+                $valor = round(mt_rand($p1,$p2));
+            }else{
+                $valor = round(mt_rand($valor_dell+(0.1 * (2750-$valor_dell)), $valor_dell+(0.2 * (2750-$valor_dell))));
+            }  
+            return $valor;
+        }elseif($simulador===false && count($jogadas)===1){
+            if($jogadas[0]->hp_valor>2750){
+                return round(mt_rand(2200,$jogadas[0]->hp_valor)); 
+            }else{
+                return round(mt_rand($jogadas[0]->hp_valor,3300)); 
+            }
+           
+           
+        }    
+           
     }
+
+    private function valorProdRandomico(float $valorBase = 0, array $historicoJogadas = [], bool $simulador = false): int
+        {
+
+            $valorMinimo = 2750;
+            $valorMaximo = 5500;
+
+            if ($simulador) {
+                return round(mt_rand($valorMinimo, $valorMaximo));
+            }
+
+           
+
+            if (!$simulador && count($historicoJogadas) === 0) {
+                // Calcular variação proporcional ao valor base
+                $diferenca = abs($valorBase - $valorMinimo);
+                $percentualMenor = 0.1 * $diferenca;
+                $percentualMaior = 0.2 * $diferenca;
+
+                if ($valorBase > $valorMinimo) {
+                    return round(mt_rand($valorBase - $percentualMaior, $valorBase - $percentualMenor));
+                } else {
+                    return round(mt_rand($valorBase + $percentualMenor, $valorBase + $percentualMaior));
+                }
+            }
+
+            if (!$simulador && count($historicoJogadas) === 1) {
+                $hpValor = $historicoJogadas[0]->hp_valor ?? null;
+
+                if ($hpValor === null) {
+                    throw new \InvalidArgumentException("Elemento de histórico inválido ou sem o atributo 'hp_valor'.");
+                }
+
+                if ($hpValor > $valorMinimo) {
+                    return round(mt_rand(2200, $hpValor));
+                } else {
+                    return round(mt_rand($hpValor, 3300));
+                }
+            }
+
+            // Caso nenhum dos cenários seja atendido, lançar exceção ou retornar um valor padrão.
+            throw new \LogicException("Condição de entrada não suportada.");
+        }
 }
