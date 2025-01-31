@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ asset('css/estilo.css') }}" rel="stylesheet" />
+	<link href="../css/estiloo.css" rel="stylesheet" />
         <title>Jogo Sparta</title>
     
 </head>
@@ -36,8 +36,8 @@
 		@csrf
 
         <div>
-            <img src="{{ asset('img/dell.png') }}" alt="Imagem" class="img-fluid" width="100" hspace="120">
-            <img src="{{ asset('img/hp.png') }}" alt="Imagem" class="img-fluid" width="80" hspace="150">
+            <img src="../imagens/dell.png" alt="Imagem" class="img-fluid" width="100" hspace="120">
+            <img src="../imagens/hp.png" alt="Imagem" class="img-fluid" width="80" hspace="150">
         </div>
     <div class="main-container">        
 
