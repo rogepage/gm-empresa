@@ -103,18 +103,7 @@
 				<br>
 			
 			<table class="tb-jogada2">
-				<tr>
-					<td id="col">Quantidade vendida 2ª jogada</td>
-					<td> @if (isset($jogadas[1])) 
-						  {{$jogadas[1]->mercado_dell}}
-						 @endif
-					</td>
-					<td>
-						@if (isset($jogadas[1])) 
-						  {{$jogadas[1]->mercado_hp}}
-						 @endif
-					</td>
-				</tr>
+				
 				<tr>
 					<td id="col">Preço de venda</td>
 					<td>
@@ -128,6 +117,31 @@
 						@endif
 					</td>
 				</tr>
+				<tr>
+					<td id="col">Qualidade</td>
+					<td>@if (isset($jogadas[1]))  @money($jogadas[1]->folha_dell??0, 'BRL') @endif</td>
+					<td>@if (isset($jogadas[1])) @money($jogadas[1]->folha_hp??0, 'BRL') @endif</td>
+				</tr>
+
+				<tr>
+					<td id="col">Propaganda</td>
+					<td>@if (isset($jogadas[1])) {{$jogadas[1]->publicidade_dell??0}}% @endif</td>
+					<td>@if (isset($jogadas[1])) {{$jogadas[1]->publicidade_hp??0}}% @endif</td>
+				</tr>
+
+				<tr>
+					<td id="col">Quantidade vendida 2ª jogada</td>
+					<td> @if (isset($jogadas[1])) 
+						  {{$jogadas[1]->mercado_dell}}
+						 @endif
+					</td>
+					<td>
+						@if (isset($jogadas[1])) 
+						  {{$jogadas[1]->mercado_hp}}
+						 @endif
+					</td>
+				</tr>
+
 				<tr>
 					<td id="col">Receita de venda</td>
 					<td>
