@@ -47,16 +47,32 @@
 					<td id="hp">HP</td>
 				</tr>
 				
-				<tr>
-					<td id="col">Quantidade vendida 1ª jogada</td>
-					<td>{{$jogadas[0]->mercado_dell??0}}</td>
-					<td> {{$jogadas[0]->mercado_hp}}</td>
-				</tr>
+				
 				<tr>
 					<td id="col">Preço de venda</td>
 					<td>@money($jogadas[0]->dell_valor??0, 'BRL')</td>
 					<td>@money($jogadas[0]->hp_valor??0, 'BRL') </td>
 				</tr>
+				<tr>
+					<td id="col">Qualidade</td>
+					<td>@money($jogadas[0]->folha_dell??0, 'BRL')</td>
+					<td>@money($jogadas[0]->folha_hp??0, 'BRL') </td>
+				</tr>
+
+				<tr>
+					<td id="col">Propaganda</td>
+					<td>{{$jogadas[0]->publicidade_dell??0}}%</td>
+					<td>{{$jogadas[0]->publicidade_hp??0}}%</td>
+				</tr>
+
+				<tr>
+					<td id="col">Quantidade vendida 1ª jogada</td>
+					<td>{{$jogadas[0]->mercado_dell??0}}</td>
+					<td> {{$jogadas[0]->mercado_hp}}</td>
+				</tr>
+
+				
+				 
 				<tr>
 					<td id="col">Receita de venda</td>
 					<td>@money(($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell)??0, 'BRL')</td>

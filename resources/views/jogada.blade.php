@@ -51,7 +51,7 @@
 				<label  for="campo1" class="form-label">Preço de venda</label>
 				<input id="preco" type="text" class="form-control"
 					value="{{ old('dell_valor', isset($form['dell_valor']) ? $form['dell_valor'] : '') }}"
-					id="dell_valor" name="dell_valor" placeholder="ex: 1.500,00"
+					id="dell_valor" name="dell_valor" placeholder="ex: 3.400,00"
 					onkeyup="formatarMoeda(this)">
 			</div>
 
@@ -59,7 +59,7 @@
 				<label  for="campo2" class="form-label">Qualidade</label>
 				<input id="quali" type="text" class="form-control"
 					value="{{ old('dell_folha', isset($form['dell_folha']) ? $form['dell_folha'] : '') }}"
-					id="dell_folha" name="dell_folha" placeholder="ex: 4.500,00"
+					id="dell_folha" name="dell_folha" placeholder="ex: 100"
 					onkeyup="formatarMoeda(this)">
 			</div>
 
@@ -67,7 +67,7 @@
 				<label  for="campo3" class="form-label">Propaganda</label>
 				<input id="prop" type="text" class="form-control"
 					value="{{ old('dell_publicidade', isset($form['dell_publicidade']) ? $form['dell_publicidade'] : '') }}"
-					id="dell_publicidade" name="dell_publicidade" placeholder="ex: 2,4"
+					id="dell_publicidade" name="dell_publicidade" placeholder="ex: 5"
 					onkeyup="formatarMoeda(this)">
 			</div>
 

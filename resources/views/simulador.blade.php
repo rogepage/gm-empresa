@@ -73,7 +73,16 @@
                         name="hp_publicidade" onkeyup="formatarMoeda(this)"></td>
                 </tr>
 
-                <tr>
+                @php
+                        $queryParams = request()->path();
+                        if($queryParams == 'simulador/simular'){
+                            $display = "table-row";  
+                        }else{
+                            $display = "none";
+                        }
+                      
+                @endphp
+                <tr id="linhaResultado" style="display: {{$display}}">
                     <td style="background-color: #ffc90e"><div class="result">
                         <input style="background-color: #ffc90e" type="text" id="mercado_dell" value="{{$simulador? $simulador->mercado_dell:''}}" readonly>
                     </div></td>
@@ -83,83 +92,13 @@
                     </div></td>
                 </tr>
             </table>
-            <!--
-            <div class="info">
-            
-               
-                !--<label for="campo1" class="form-label">Preço de venda</label>--
-				<input type="text" class="form-control"
-                value="{{ old('dell_valor', isset($form['dell_valor']) ? $form['dell_valor'] : '3.500,00') }}"
-                id="dell_valor" name="dell_valor"	onkeyup="formatarMoeda(this)">
-            <br>
-            
-            !--<label for="campo2" class="form-label">Qualidade</label>--
-            <input type="text" class="form-control"
-                value="{{ old('dell_folha', isset($form['dell_folha']) ? $form['dell_folha'] : '') }}"
-                id="dell_folha" name="dell_folha"   onkeyup="formatarMoeda(this)">
-            <br>
-              
-            !--<label for="campo3" class="form-label">Propaganda</label>--
-            <input type="text" class="form-control"
-                value="{{ old('dell_publicidade', isset($form['dell_publicidade']) ? $form['dell_publicidade'] : '') }}"
-                id="dell_publicidade" name="dell_publicidade"  onkeyup="formatarMoeda(this)">
-        </div>
-            -->
-            
-
-           
-			
-
-           <!-- <div class="result">
-                <input type="text" id="mercado_dell" value="{{$simulador? $simulador->mercado_dell:''}}" readonly>
-            </div>-->
-           
-        
-
-        <!--<div class="textos">
-            <input type="text" value="Preço de venda"><br>
-            <input type="text" value="Qualidade"><br>
-            <input type="text" value="Propaganda"><br>
-            <input type="text" value="Unidades vendidas">
-            
-            
-        </div>
-
-        <div class="column">
-			<img src="{{ asset('img/hp.png') }}" alt="Imagem" class="img-fluid" width="100">
-            <div class="info">
-                
-				!--<label for="campo4" class="form-label">Preço de venda</label>--
-				<input type="text" class="form-control" id="hp_valor" name="hp_valor"
-					value="{{ old('hp_valor', isset($form['hp_valor']) ? $form['hp_valor'] : '3.500,00') }}"
-					onkeyup="formatarMoeda(this)">
-                <br>
-                
-                !--<label for="campo5" class="form-label">Qualidade</label>--
-                <input type="text" class="form-control" id="hp_folha" name="hp_folha"
-                    value="{{ old('hp_folha', isset($form['hp_folha']) ? $form['hp_folha'] : '') }}"
-                    onkeyup="formatarMoeda(this)">
-                <br>
-                
-                !--<label for="campo6" class="form-label">Propaganda</label>--
-                <input type="text" class="form-control" id="hp_publicidade"
-                    value="{{ old('hp_publicidade', isset($form['hp_publicidade']) ? $form['hp_publicidade'] : '') }}"
-                    name="hp_publicidade" onkeyup="formatarMoeda(this)">
-            </div>-->
-           
-            
-			
-            
-           
-           <!-- <div class="result">
-                <input type="text" id="mercado_hp" value="{{$simulador ? $simulador->mercado_hp:''}}" readonly>
-            </div>-->
+          
         
 
     </div>
 
     <div class="button-container">
-        <button class="simulate-button" type="submit">Simular</button>
+        <button class="simulate-button" id="btn-simular" type="submit">Simular</button>
     </div>
 
    
@@ -190,6 +129,50 @@
  
  
      </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const linhaResultado = document.getElementById("linhaResultado");
+                // const btnSimular = document.getElementById("btn-simular");
+                const inputs = document.querySelectorAll("input");
+
+                
+
+                // // Oculta a linha quando qualquer input for alterado
+                if (linhaResultado) {
+                    inputs.forEach(input => {
+                    input.addEventListener("input", function () {
+                // Verifica se há pelo menos um input com valor preenchido
+                      let algumPreenchido = Array.from(inputs).some(input => input.value.trim() !== "");
+
+                // Somente oculta a linha se algum input tiver valor
+                     if (algumPreenchido) {
+                         linhaResultado.style.display = "none";
+                    }
+                    });
+                 });
+             }
+            });
+
+
+            document.addEventListener("DOMContentLoaded", function () {
+                let inputs = document.querySelectorAll("input, textarea"); // Captura inputs e textareas
+                let botaoSimular = document.getElementById("btn-simular"); // Captura o botão
+
+                inputs.forEach(input => {
+                    input.addEventListener("keypress", function (event) {
+                        if (event.key === "Enter") { // Verifica se a tecla pressionada é "Enter"
+                            event.preventDefault(); // Impede o comportamento padrão do Enter (ex: envio de formulário)
+                            if (botaoSimular) {
+                                botaoSimular.click(); // Simula o clique no botão
+                            }
+                        }
+                    });
+                });
+            });
+
+
+        </script>
     <br>
     <div>
 

@@ -27,14 +27,7 @@ class SimuladorService
         $dell_publicidade = $this->converteMoedaFloat(isset($data['dell_publicidade']) ? $data['dell_publicidade'] : 0);
         $hp_publicidade = $this->converteMoedaFloat(isset($data['hp_publicidade']) ? $data['hp_publicidade'] : 0);
 
-       
-        // if ($empresa == false) {
-        //     $dell_investimento =  (bool)$data['dell_investimento'];
-        //     $hp_investimento =  (bool)$data['hp_investimento'];
-        // } else {
-        //     $dell_investimento =  false;
-        //     $hp_investimento =  false;
-        // }
+      
 
         if ($empresa) {
             if ($rodada >= 2) {
@@ -173,6 +166,12 @@ class SimuladorService
         $simulador->despesas_fixa_dell = $despesa_fixa;
         $simulador->despesas_fixa_hp = $despesa_fixa;
         $simulador->custo_direto= $obj->custo_direto;
+        $simulador->folha_dell = $dell_folha;
+        $simulador->folha_hp = $hp_folha;
+
+        $simulador->publicidade_dell = $dell_publicidade;
+        $simulador->publicidade_hp = $hp_publicidade;
+
         // $simulador->despesas_fixa_hp = $aInvestHP;
         // $simulador->despesas_fixa_hp = $aInvestHP;
 

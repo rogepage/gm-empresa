@@ -21,7 +21,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'simulador']);
 
 Route::any('/simulador', [App\Http\Controllers\HomeController::class, 'simulador'])->name('simulador');
 
-Route::post('/simulador/simular', [App\Http\Controllers\HomeController::class, 'simular'])->name('simulador.simular');
+Route::any('/simulador/simular', [App\Http\Controllers\HomeController::class, 'simular'])->name('simulador.simular');
 
 Route::get('/inicio', [App\Http\Controllers\HomeController::class, 'inicio'])->name('jogadas.inicio');
 
