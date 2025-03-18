@@ -141,17 +141,18 @@ class HomeController extends Controller
             return redirect()->route('simulador');
         }
         $jogadas =  array_reverse($request->session()->get('jogadas'));
+        // dd($jogadas);
         $acumulado_dell = 0;
         $acumulado_hp = 0;
-        if(isset($jogadas[0])){
-            $acumulado_dell += ($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - (($jogadas[0]->custo_direto*$jogadas[0]->mercado_dell)-$jogadas[0]->despesas_fixa_dell);
-            $acumulado_hp += ($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - (($jogadas[0]->custo_direto*$jogadas[0]->mercado_hp)-$jogadas[0]->despesas_fixa_hp);
-        }
+        // if(isset($jogadas[0])){
+        //     $acumulado_dell += ($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - (($jogadas[0]->custo_direto*$jogadas[0]->mercado_dell)-$jogadas[0]->despesas_fixa_dell);
+        //     $acumulado_hp += ($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - (($jogadas[0]->custo_direto*$jogadas[0]->mercado_hp)-$jogadas[0]->despesas_fixa_hp);
+        // }
 
-        if(isset($jogadas[1])){
-            $acumulado_dell += ($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - (($jogadas[1]->custo_direto*$jogadas[1]->mercado_dell)-$jogadas[1]->despesas_fixa_dell);
-            $acumulado_hp += ($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - (($jogadas[1]->custo_direto*$jogadas[1]->mercado_hp)-$jogadas[1]->despesas_fixa_hp);
-        }
+        // if(isset($jogadas[1])){
+        //     $acumulado_dell += ($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - (($jogadas[1]->custo_direto*$jogadas[1]->mercado_dell)-$jogadas[1]->despesas_fixa_dell);
+        //     $acumulado_hp += ($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - (($jogadas[1]->custo_direto*$jogadas[1]->mercado_hp)-$jogadas[1]->despesas_fixa_hp);
+        // }
 
     
         return view('resultado', compact('jogadas','acumulado_dell','acumulado_hp','display'));

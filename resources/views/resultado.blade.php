@@ -74,14 +74,14 @@
 				
 				 
 				<tr>
-					<td id="col">Receita de venda</td>
+					<td id="col">Receita de venda </td>
 					<td>@money(($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell)??0, 'BRL')</td>
 					<td>@money(($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp)??0, 'BRL') </td>
 				</tr>
 				<tr>
 					<td id="col">(-) Custo de fabricação </td>
-					<td> @money(($jogadas[0]->custo_direto*100)??0, 'BRL')</td>
-					<td> @money(($jogadas[0]->custo_direto*100)??0, 'BRL')</td>
+					<td> @money(($jogadas[0]->custo_total_dell)??0, 'BRL')</td>
+					<td> @money(($jogadas[0]->custo_total_hp)??0, 'BRL')</td>
 				</tr>
 				<tr>
 					<td id="col">(-) Despesas fixas</td>
@@ -90,10 +90,8 @@
 				</tr>
 				<tr>
 					<td id="col">(=) Lucro</td>
-					@php $dellLucro1 = (($jogadas[0]->dell_valor*$jogadas[0]->mercado_dell) - (($jogadas[0]->custo_direto*$jogadas[0]->mercado_dell) - $jogadas[0]->despesas_fixa_dell))@endphp
-					<td> @money($dellLucro1, 'BRL')</td>
-					@php $hpLucro1 = (($jogadas[0]->hp_valor*$jogadas[0]->mercado_hp) - (($jogadas[0]->custo_direto*$jogadas[0]->mercado_hp) - $jogadas[0]->despesas_fixa_hp)) @endphp
-					<td>@money($hpLucro1, 'BRL')</td>
+					<td> @money($jogadas[0]->lucro_dell, 'BRL')</td>
+					<td>@money($jogadas[0]->lucro_hp, 'BRL')</td>
 				</tr>
 			</table>
 			
@@ -159,12 +157,12 @@
 					<td id="col">(-) Custo de fabricação </td>
 					<td> 
 						@if(isset($jogadas[1])) 
-						   @money($jogadas[1]->custo_direto*100, 'BRL')
+						   @money($jogadas[1]->custo_total_dell, 'BRL')
 						@endif
 					</td>
 					<td> 
 						@if(isset($jogadas[1])) 
-						@money($jogadas[1]->custo_direto*100, 'BRL')
+						   @money($jogadas[1]->custo_total_hp, 'BRL')
 					 @endif
 					</td>
 				</tr>
@@ -185,14 +183,13 @@
 					<td id="col">(=) Lucro</td>
 					<td>
 						@if (isset($jogadas[1])) 
-						  @php $dellValor2 = (($jogadas[1]->dell_valor*$jogadas[1]->mercado_dell) - (($jogadas[1]->custo_direto*$jogadas[1]->mercado_dell)-$jogadas[1]->despesas_fixa_dell)) @endphp
-						  @money($dellValor2, 'BRL')
+							  @money($jogadas[1]->lucro_dell, 'BRL')
 						@endif
 						</td>
+						
 					<td>
 						@if (isset($jogadas[1])) 
-						  @php $hpValor2 = (($jogadas[1]->hp_valor*$jogadas[1]->mercado_hp) - (($jogadas[1]->custo_direto*$jogadas[1]->mercado_hp)-$jogadas[1]->despesas_fixa_hp)) @endphp
-						  @money($hpValor2, 'BRL')
+							  @money($jogadas[1]->lucro_hp, 'BRL')
 						@endif
 					</td>
 				</tr>
@@ -205,8 +202,12 @@
 			<table class="lucro-ac">
 				<tr>
 					<td id="col">Lucro acumulado</td>
-					<td>@money($acumulado_dell, 'BRL') </td>
-					<td>@money($acumulado_hp, 'BRL')</td>
+					@php
+					$acumladoDell = $jogadas[0]->lucro_dell + (isset($jogadas[1]->lucro_dell) ? $jogadas[1]->lucro_dell :0);
+					$acumuladoHp = $jogadas[0]->lucro_hp + (isset($jogadas[1]->lucro_hp) ? $jogadas[1]->lucro_hp :0);
+					@endphp
+					<td>@money($acumladoDell, 'BRL') </td>
+					<td>@money($acumuladoHp, 'BRL')</td>
 				</tr>
 			</table>
 

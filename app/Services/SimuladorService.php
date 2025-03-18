@@ -42,14 +42,11 @@ class SimuladorService
         }
 
 
-
+       
         $custo_direto = $this->converteMoedaFloat($obj->custo_direto);
         $valor_maximo_produto = $this->converteMoedaFloat($obj->valor_maximo_produto);
         $valor_investimento =  $this->converteMoedaFloat($obj->valor_investimento);
         $despesa_fixa  = $this->converteMoedaFloat($obj->despesa_fixa);
-
-
-
 
 
         $mercadoTotal = $this->calculaMercadoPrecoMenor(
@@ -92,32 +89,33 @@ class SimuladorService
             $mercadoDell = $mercadoDell + $unitPropag;
         }
 
-
+       
         // calculando o lucro da DELL
-        $receitaDell = ceil($mercadoDell * $dell_valor);
-
+        $receitaDell = ($mercadoDell * $dell_valor);
+    
+       // dd($mercadoDell, $dell_valor,$receitaDell); ok
 
         $custoTotalDell = ($mercadoDell * $custo_direto);
         $aInvestDell = 0;
-        // if ($dell_investimento) {
-        //     $custoTotalDell = ($mercadoDell * $custo_direto);
-        //     $aInvestDell = $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
-        // }
 
-
-
+       
+        
         // deduzindo o valor de propagando da receita DELL
 
         $receitaDell = $receitaDell - ($receitaDell * ($dell_publicidade / 100));
         $margemDell = $receitaDell - $custoTotalDell;
 
+        
 
         $lucroDellSemForm = $margemDell - $despesa_fixa - $aInvestDell;
+
+        // dd($margemDell,$despesa_fixa, $aInvestDell,$lucroDellSemForm);
+      
 
         // deduzindo o valor da folha do lucro DELL
         $lucroDellSemForm = $lucroDellSemForm - ($dell_folha * $mercadoDell);
 
-
+        
         /********************** HP ****************************/
 
 
@@ -141,17 +139,13 @@ class SimuladorService
         $custoTotalHP = ($mercadoHP * $custo_direto);
         $aInvestHP = 0;
 
-        // if ($hp_investimento) {
-        //     $custoTotalHP = ($mercadoHP * $custo_direto);
-        //     $aInvestHP =  $this->calculaDadosInvenstimento($valor_investimento, $obj->juros);
-        // }
-
         $margemHP = $receitaHP - $custoTotalHP;
         $lucroHPSemForm = $margemHP - $despesa_fixa -  $aInvestHP;
-
+       
         // deduzindo o valor da folha do lucro DELL
         $lucroHPSemForm = $lucroHPSemForm - ($hp_folha * $mercadoHP);
 
+      
 
         // retornando os valores calculados para o simulador
         $simulador = new stdClass();
@@ -165,9 +159,13 @@ class SimuladorService
         $simulador->valor_investimento = $valor_investimento;
         $simulador->despesas_fixa_dell = $despesa_fixa;
         $simulador->despesas_fixa_hp = $despesa_fixa;
-        $simulador->custo_direto= $obj->custo_direto;
         $simulador->folha_dell = $dell_folha;
         $simulador->folha_hp = $hp_folha;
+
+        $simulador->custo_total_dell = $obj->custo_direto * $mercadoDell;
+        $simulador->custo_total_hp = $obj->custo_direto * $mercadoHP;
+
+      
 
         $simulador->publicidade_dell = $dell_publicidade;
         $simulador->publicidade_hp = $hp_publicidade;
@@ -177,7 +175,7 @@ class SimuladorService
 
         // $simulador->hp_investe = $hp_investimento;
         // $simulador->dell_investe = $dell_investimento;
-
+      
         return $simulador;
     }
 
@@ -207,11 +205,23 @@ class SimuladorService
         return $qt;
     }
 
-    private function converteMoedaFloat($valor)
+    private function converteMoedaFloat_($valor)
     {
         $valor1 = str_replace(".", "", $valor);
         $valor2 = str_replace(",", ".", $valor1);
-        return (float) $valor2;
+        return filter_var($valor2, FILTER_VALIDATE_FLOAT);
+    }
+
+    private function converteMoedaFloat($valor)
+    {
+        if (empty($valor)) {
+            return 0.0;
+        }
+    
+        // Remove separadores de milhar e substitui a vírgula decimal por ponto
+        $valor = str_replace(['.', ','], ['', '.'], $valor);
+        
+        return is_numeric($valor) ? (float) $valor : 0.0;
     }
 
     private function calculaDadosInvenstimento($investimento, $juros)
@@ -255,8 +265,10 @@ class SimuladorService
                 $percentualMenor = 0.1 * $diferenca;
                 $percentualMaior = 0.2 * $diferenca;
 
-                dd($p1,$p2,$valor_dell - $percentualMaior, $valor_dell - $percentualMenor);
+                // dd($p1,$p2,$valor_dell - $percentualMaior, $valor_dell - $percentualMenor);
                 $valor = round(mt_rand($p1,$p2));
+            }elseif($valor_dell == 2750){ 
+                $valor = round(mt_rand(2751, 2850));
             }else{
                 $valor = round(mt_rand($valor_dell+(0.1 * (2750-$valor_dell)), $valor_dell+(0.2 * (2750-$valor_dell))));
             }  
@@ -287,6 +299,12 @@ class SimuladorService
 
             if (!$simulador && count($historicoJogadas) === 0) {
                 // Calcular variação proporcional ao valor base
+
+                if($valorBase == $valorMinimo){ 
+                    // dd(round(mt_rand(2751, 2850)));
+                    return round(mt_rand(2751, 2850));
+                }
+
                 $diferenca = abs($valorBase - $valorMinimo);
                 $percentualMenor = 0.1 * $diferenca;
                 $percentualMaior = 0.2 * $diferenca;

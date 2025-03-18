@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Unit\\SimuladorServiceTest::testConverteMoedaFloat":7,"Tests\\Unit\\SimuladorServiceTest::testSimulaJogadaComParametrosValidos":8},"times":{"Tests\\Unit\\SimuladorServiceTest::testConverteMoedaFloat":0.021,"Tests\\Unit\\SimuladorServiceTest::testSimulaJogadaComParametrosValidos":0.059}}
